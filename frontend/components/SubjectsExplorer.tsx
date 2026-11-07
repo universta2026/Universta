@@ -5,169 +5,142 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import type { Subject } from "@/lib/api";
 import SubjectIcon from "./SubjectIcon";
-
-type Sort = "relevant" | "az" | "specs";
+import { Crumbs, SecHead, withHighlight } from "./ui";
+import { LEVEL_OPTIONS } from "./site-config";
 
 export type SubjectsCopy = {
   eyebrow: string;
-  title: string;
+  title: string; // may contain {word} -> blue highlight block
   intro: string;
   searchPlaceholder: string;
   searchButton: string;
-  filtersTitle: string;
   emptyMessage: string;
+  allEyebrow: string;
+  allTitle: string; // {subjects} and {specializations} are replaced with the totals
+  allIntro: string;
 };
 
+export type QuickLink = { name: string; slug: string };
+
+// Subjects page: hero with search + the "All subjects" grid.
+// Search filtering is the same as before (subject name, description or specialization name).
 export default function SubjectsExplorer({
   subjects,
   copy,
+  quickLinks,
 }: {
   subjects: Subject[];
   copy: SubjectsCopy;
+  quickLinks: QuickLink[];
 }) {
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<string[]>([]);
-  const [sort, setSort] = useState<Sort>("relevant");
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-
-    const list = subjects.filter((s) => {
-      if (selected.length > 0 && !selected.includes(s.id)) return false;
-      if (!q) return true;
-      return (
+    if (!q) return subjects;
+    return subjects.filter(
+      (s) =>
         s.name.toLowerCase().includes(q) ||
         (s.description ?? "").toLowerCase().includes(q) ||
-        s.specializations.some((sp) => sp.name.toLowerCase().includes(q))
-      );
-    });
+        s.specializations.some((sp) => sp.name.toLowerCase().includes(q)),
+    );
+  }, [subjects, query]);
 
-    if (sort === "az") return [...list].sort((a, b) => a.name.localeCompare(b.name));
-    if (sort === "specs")
-      return [...list].sort((a, b) => b.specializations.length - a.specializations.length);
-    return list; // "relevant" = the display_order set in Directus
-  }, [subjects, query, selected, sort]);
-
-  const toggle = (id: string) =>
-    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  const specCount = subjects.reduce((n, s) => n + s.specializations.length, 0);
+  const allTitle = copy.allTitle
+    .replace("{subjects}", String(subjects.length))
+    .replace("{specializations}", String(specCount));
 
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-4 pb-14 pt-8">
-          <nav className="text-xs text-slate-500">
-            <Link href="/" className="hover:text-slate-900">Home</Link>
-            <span className="mx-2">›</span>
-            <span className="text-slate-900">Subjects</span>
-          </nav>
+      <section className="page-hero">
+        <div className="shell">
+          <Crumbs items={[{ label: "Home", href: "/" }, { label: "Subjects" }]} />
+          <div className="mt-8">
+            <span className="eyebrow">{copy.eyebrow}</span>
+          </div>
+          <h1 className="t-h1 mt-2">{withHighlight(copy.title)}</h1>
+          <p className="lead">{copy.intro}</p>
 
-          <p className="mt-10 text-xs font-semibold tracking-widest text-blue-600">{copy.eyebrow}</p>
-          <h1 className="mt-3 text-4xl font-bold text-slate-900">{copy.title}</h1>
-          <p className="mt-3 max-w-xl text-slate-600">{copy.intro}</p>
-
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="mt-8 flex max-w-3xl items-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
-          >
-            <Search size={16} className="mx-3 shrink-0 text-slate-400" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={copy.searchPlaceholder}
-              className="min-w-0 flex-1 bg-transparent py-2 text-sm outline-none"
-            />
-            <button
-              type="submit"
-              className="ml-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-            >
+          <form className="searchbar" role="search" onSubmit={(e) => e.preventDefault()}>
+            <div className="input-icon">
+              <Search className="ico" aria-hidden />
+              <input
+                className="input"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={copy.searchPlaceholder}
+                aria-label="Search"
+              />
+            </div>
+            <span className="divider" />
+            {/* Visual only for now: the subjects list API does not return study levels. */}
+            <select className="select" aria-label="Level" defaultValue={LEVEL_OPTIONS[0]}>
+              {LEVEL_OPTIONS.map((l) => (
+                <option key={l}>{l}</option>
+              ))}
+            </select>
+            <button className="btn btn-primary" type="submit">
               {copy.searchButton}
             </button>
           </form>
+
+          {quickLinks.length > 0 && (
+            <div className="quick-links">
+              <span>Popular:</span>
+              {quickLinks.map((q) => (
+                <Link key={q.slug} href={`/specializations/${q.slug}`}>
+                  {q.name}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Filters + list */}
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[220px_1fr]">
-        <aside className="h-fit rounded-xl border border-slate-200 bg-white">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <span className="text-sm font-semibold">{copy.filtersTitle}</span>
-            <button onClick={() => setSelected([])} className="text-xs font-medium text-blue-600">
-              Clear all
-            </button>
-          </div>
-          <div className="px-4 py-4">
-            <p className="mb-3 text-xs font-semibold text-slate-700">Field of study</p>
-            <ul className="space-y-3">
-              {subjects.map((s) => (
-                <li key={s.id}>
-                  <label className="flex cursor-pointer items-start gap-2 text-sm text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(s.id)}
-                      onChange={() => toggle(s.id)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300"
-                    />
-                    <span className="flex-1">{s.name}</span>
-                    <span className="text-xs text-slate-400">{s.specializations.length}</span>
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
-        <div>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm">
-              <span className="font-semibold">{visible.length}</span> subjects
-            </p>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as Sort)}
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-            >
-              <option value="relevant">Sort: Most relevant</option>
-              <option value="az">Sort: A to Z</option>
-              <option value="specs">Sort: Most specializations</option>
-            </select>
-          </div>
+      {/* All subjects */}
+      <section className="section">
+        <div className="shell">
+          <SecHead eyebrow={copy.allEyebrow} title={allTitle} intro={copy.allIntro} />
 
           {visible.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-500">
+            <div className="empty" style={{ display: "block" }}>
               {copy.emptyMessage}
             </div>
           ) : (
-            <ul className="space-y-4">
-              {visible.map((s) => (
-                <li key={s.id}>
-                  <Link
-                    href={`/subjects/${s.slug}`}
-                    className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300"
-                  >
-                    <SubjectIcon name={s.icon_key} />
-                    <div className="min-w-0">
-                      <h2 className="font-semibold text-slate-900">{s.name}</h2>
-                      {s.description && (
-                        <p className="mt-1 text-sm text-slate-600">{s.description}</p>
-                      )}
-                      {s.specializations.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {s.specializations.map((sp) => (
-                            <span
-                              key={sp.id}
-                              className="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-900"
-                            >
-                              {sp.name}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+            <div className="grid g-2">
+              {visible.map((s) => {
+                const shown = s.specializations.slice(0, 6);
+                const rest = s.specializations.length - shown.length;
+                return (
+                  <div className="card" key={s.id}>
+                    <div className="row" style={{ alignItems: "flex-start", gap: 16 }}>
+                      <SubjectIcon name={s.icon_key} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <h3 className="card-title">
+                          <Link className="stretched" href={`/subjects/${s.slug}`} style={{ color: "inherit" }}>
+                            {s.name}
+                          </Link>
+                        </h3>
+                        {s.description && <p className="muted small mt-2">{s.description}</p>}
+                        {shown.length > 0 && (
+                          <div className="tags mt-4 above">
+                            {shown.map((sp) => (
+                              <Link key={sp.id} className="tag tag-link" href={`/specializations/${sp.slug}`}>
+                                {sp.name}
+                              </Link>
+                            ))}
+                            {rest > 0 && <span className="tag tag-cloud">+{rest} more</span>}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       </section>
