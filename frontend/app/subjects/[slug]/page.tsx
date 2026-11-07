@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ChevronRight } from "lucide-react";
+import RichText from "@/components/RichText";
+import SubjectIcon from "@/components/SubjectIcon";
+import { getPageContent, getSubject, text } from "@/lib/api";
+import { stripHtml } from "@/lib/html";
 import { ArrowRight, BookOpen, ChevronRight, FileCheck, Globe, Landmark, Layers, MessageCircle, Wallet, Award } from "lucide-react";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
@@ -86,6 +91,7 @@ export default async function SubjectDetailPage({ params }: Props) {
     faqTitle: text(content, "faq", "title", "Questions students ask"),
   };
 
+  const lead = stripHtml(subject.description); // plain-text summary for the header
   const hasSpecs = subject.specializations.length > 0;
   const hasLevels = subject.study_levels.length > 0;
   const others = allSubjects.filter((s) => s.id !== subject.id).slice(0, 5);

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import type { Subject } from "@/lib/api";
+import { stripHtml } from "@/lib/html";
 import SubjectIcon from "./SubjectIcon";
 import { Crumbs, SecHead, withHighlight } from "./ui";
 import { LEVEL_OPTIONS } from "./site-config";
