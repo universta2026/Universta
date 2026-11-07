@@ -6,7 +6,9 @@ import {
   FlaskConical,
   Heart,
   Megaphone,
+  MessageCircle,
   PenTool,
+  Plane,
   Scale,
   Users,
   Utensils,
@@ -25,13 +27,19 @@ const ICONS: Record<string, LucideIcon> = {
   flask: FlaskConical,
   utensils: Utensils,
   megaphone: Megaphone,
+  plane: Plane,
+  message: MessageCircle,
 };
 
-export default function SubjectIcon({ name }: { name: string | null }) {
+// size "md" = 48px tile (cards), "lg" = 72px tile (page hero)
+export default function SubjectIcon({ name, size = "md" }: { name: string | null; size?: "md" | "lg" }) {
   const Icon = (name && ICONS[name]) || BookOpen;
   return (
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-      <Icon size={20} />
+    <span
+      className="ico-tile"
+      style={size === "lg" ? { width: 72, height: 72, borderRadius: 16 } : undefined}
+    >
+      <Icon className="ico ico-lg" aria-hidden />
     </span>
   );
 }
