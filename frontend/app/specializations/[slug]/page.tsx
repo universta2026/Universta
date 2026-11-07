@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import RichText from "@/components/RichText";
 import { getSpecialization } from "@/lib/api";
+import { stripHtml } from "@/lib/html";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -32,7 +34,9 @@ export default async function SpecializationPage({ params }: Props) {
 
       <p className="mt-6 text-xs font-semibold tracking-widest text-blue-600">SPECIALIZATION</p>
       <h1 className="mt-2 text-3xl font-bold text-slate-900">{spec.name}</h1>
-      {spec.description && <p className="mt-3 max-w-2xl text-slate-700">{spec.description}</p>}
+      {stripHtml(spec.description) && (
+        <RichText html={spec.description ?? ""} className="mt-3 max-w-2xl" />
+      )}
 
       <Link
         href={`/subjects/${spec.subject_slug}`}

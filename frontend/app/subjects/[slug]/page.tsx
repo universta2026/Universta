@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
+import RichText from "@/components/RichText";
 import SubjectIcon from "@/components/SubjectIcon";
 import { getPageContent, getSubject, text } from "@/lib/api";
+import { stripHtml } from "@/lib/html";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -39,6 +41,7 @@ export default async function SubjectDetailPage({ params }: Props) {
     ),
   };
 
+  const lead = stripHtml(subject.description); // plain-text summary for the header
   const hasSpecs = subject.specializations.length > 0;
   const hasLevels = subject.study_levels.length > 0;
 
@@ -65,7 +68,7 @@ export default async function SubjectDetailPage({ params }: Props) {
           <SubjectIcon name={subject.icon_key} />
           <h1 className="text-3xl font-bold text-slate-900">{subject.name}</h1>
         </div>
-        {subject.description && <p className="mt-3 text-slate-600">{subject.description}</p>}
+        {lead && <p className="mt-3 line-clamp-2 text-slate-600">{lead}</p>}
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:max-w-md">
           <div className="rounded-xl border border-slate-200 p-4">
@@ -99,9 +102,11 @@ export default async function SubjectDetailPage({ params }: Props) {
         {/* Overview */}
         <section id="overview" className="scroll-mt-16">
           <h2 className="text-xl font-bold">{copy.overviewTitle}</h2>
-          <p className="mt-3 text-slate-700">
-            {subject.description ?? `Explore studying ${subject.name} abroad.`}
-          </p>
+          {lead ? (
+            <RichText html={subject.description ?? ""} className="mt-3" />
+          ) : (
+            <p className="mt-3 text-slate-700">Explore studying {subject.name} abroad.</p>
+          )}
         </section>
 
         {/* Specializations */}
@@ -118,8 +123,10 @@ export default async function SubjectDetailPage({ params }: Props) {
                   >
                     <div>
                       <h3 className="font-semibold text-slate-900">{sp.name}</h3>
-                      {sp.description && (
-                        <p className="mt-1 text-sm text-slate-600">{sp.description}</p>
+                      {stripHtml(sp.description) && (
+                        <p className="mt-1 line-clamp-3 text-sm text-slate-600">
+                          {stripHtml(sp.description)}
+                        </p>
                       )}
                     </div>
                     <ChevronRight size={18} className="mt-1 shrink-0 text-slate-400" />

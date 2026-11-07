@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import type { Subject } from "@/lib/api";
+import { stripHtml } from "@/lib/html";
 import SubjectIcon from "./SubjectIcon";
 
 type Sort = "relevant" | "az" | "specs";
@@ -37,7 +38,7 @@ export default function SubjectsExplorer({
       if (!q) return true;
       return (
         s.name.toLowerCase().includes(q) ||
-        (s.description ?? "").toLowerCase().includes(q) ||
+        stripHtml(s.description).toLowerCase().includes(q) ||
         s.specializations.some((sp) => sp.name.toLowerCase().includes(q))
       );
     });
@@ -148,12 +149,14 @@ export default function SubjectsExplorer({
                     <SubjectIcon name={s.icon_key} />
                     <div className="min-w-0">
                       <h2 className="font-semibold text-slate-900">{s.name}</h2>
-                      {s.description && (
-                        <p className="mt-1 text-sm text-slate-600">{s.description}</p>
+                      {stripHtml(s.description) && (
+                        <p className="mt-1 line-clamp-2 text-sm text-slate-600">
+                          {stripHtml(s.description)}
+                        </p>
                       )}
                       {s.specializations.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">
-                          {s.specializations.map((sp) => (
+                          {s.specializations.slice(0, 4).map((sp) => (
                             <span
                               key={sp.id}
                               className="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-900"
@@ -161,6 +164,11 @@ export default function SubjectsExplorer({
                               {sp.name}
                             </span>
                           ))}
+                          {s.specializations.length > 4 && (
+                            <span className="px-1 py-1 text-xs text-slate-500">
+                              +{s.specializations.length - 4} more
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
