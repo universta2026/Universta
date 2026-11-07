@@ -43,16 +43,22 @@ export default function SubjectsExplorer({
       (s) =>
         s.name.toLowerCase().includes(q) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
         stripHtml(s.description).toLowerCase().includes(q) ||
         s.specializations.some((sp) => sp.name.toLowerCase().includes(q))
       );
     });
 =======
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
         (s.description ?? "").toLowerCase().includes(q) ||
         s.specializations.some((sp) => sp.name.toLowerCase().includes(q)),
     );
   }, [subjects, query]);
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
   const specCount = subjects.reduce((n, s) => n + s.specializations.length, 0);
   const allTitle = copy.allTitle
@@ -119,6 +125,7 @@ export default function SubjectsExplorer({
             </div>
           ) : (
 <<<<<<< HEAD
+<<<<<<< HEAD
             <ul className="space-y-4">
               {visible.map((s) => (
                 <li key={s.id}>
@@ -152,6 +159,8 @@ export default function SubjectsExplorer({
                         </div>
                       )}
 =======
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
             <div className="grid g-2">
               {visible.map((s) => {
                 const shown = s.specializations.slice(0, 6);
@@ -178,7 +187,10 @@ export default function SubjectsExplorer({
                           </div>
                         )}
                       </div>
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
                     </div>
                   </div>
                 );

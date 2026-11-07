@@ -2,10 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import RichText from "@/components/RichText";
 import { getSpecialization } from "@/lib/api";
 import { stripHtml } from "@/lib/html";
 =======
+=======
+import RichText from "@/components/RichText";
+import { getSpecialization } from "@/lib/api";
+import { stripHtml } from "@/lib/html";
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 import { ArrowRight, Award, BookOpen, FileCheck, Globe, Landmark, Layers, MessageCircle, Wallet } from "lucide-react";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
@@ -29,7 +35,10 @@ import {
   StatCards,
 } from "@/components/ui";
 import { getSpecialization, getSubject } from "@/lib/api";
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -53,6 +62,31 @@ export default async function SpecializationPage({ params }: Props) {
     `A focused path within ${spec.subject_name}. See what you’ll study, where to study it and the careers it leads to.`;
 
   return (
+    <main className="mx-auto max-w-4xl px-4 py-8">
+      <nav className="text-xs text-slate-500">
+        <Link href="/" className="hover:text-slate-900">Home</Link>
+        <span className="mx-2">›</span>
+        <Link href="/subjects" className="hover:text-slate-900">Subjects</Link>
+        <span className="mx-2">›</span>
+        <Link href={`/subjects/${spec.subject_slug}`} className="hover:text-slate-900">
+          {spec.subject_name}
+        </Link>
+        <span className="mx-2">›</span>
+        <span className="text-slate-900">{spec.name}</span>
+      </nav>
+
+      <p className="mt-6 text-xs font-semibold tracking-widest text-blue-600">SPECIALIZATION</p>
+      <h1 className="mt-2 text-3xl font-bold text-slate-900">{spec.name}</h1>
+      {stripHtml(spec.description) && (
+        <RichText html={spec.description ?? ""} className="mt-3 max-w-2xl" />
+      )}
+
+      <Link
+        href={`/subjects/${spec.subject_slug}`}
+        className="mt-8 inline-block rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium hover:border-blue-400"
+      >
+        ← Back to {spec.subject_name}
+      </Link>
     <main>
       <DetailHero
         crumbs={[
@@ -101,12 +135,15 @@ export default async function SpecializationPage({ params }: Props) {
       />
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       <p className="mt-6 text-xs font-semibold tracking-widest text-blue-600">SPECIALIZATION</p>
       <h1 className="mt-2 text-3xl font-bold text-slate-900">{spec.name}</h1>
       {stripHtml(spec.description) && (
         <RichText html={spec.description ?? ""} className="mt-3 max-w-2xl" />
       )}
 =======
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
       <DetailLayout
         main={
           <>
@@ -121,7 +158,10 @@ export default async function SpecializationPage({ params }: Props) {
               </div>
               <StatCards />
             </Section>
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
             <Section
               id="learn"

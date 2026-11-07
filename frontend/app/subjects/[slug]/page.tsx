@@ -2,12 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 import { ChevronRight } from "lucide-react";
 import RichText from "@/components/RichText";
 import SubjectIcon from "@/components/SubjectIcon";
 import { getPageContent, getSubject, text } from "@/lib/api";
 import { stripHtml } from "@/lib/html";
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 import { ArrowRight, BookOpen, ChevronRight, FileCheck, Globe, Landmark, Layers, MessageCircle, Wallet, Award } from "lucide-react";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
@@ -31,7 +37,10 @@ import {
   StatCards,
 } from "@/components/ui";
 import { getPageContent, getSubject, getSubjects, text } from "@/lib/api";
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -147,6 +156,7 @@ export default async function SubjectDetailPage({ params }: Props) {
       <SubNav items={tabs.map((t) => ({ id: t.id, label: t.label }))} />
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         <p className="mt-6 text-xs font-semibold tracking-widest text-blue-600">SUBJECT</p>
         <div className="mt-3 flex items-center gap-4">
           <SubjectIcon name={subject.icon_key} />
@@ -154,6 +164,8 @@ export default async function SubjectDetailPage({ params }: Props) {
         </div>
         {lead && <p className="mt-3 line-clamp-2 text-slate-600">{lead}</p>}
 =======
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
       <DetailLayout
         main={
           <>
@@ -168,7 +180,10 @@ export default async function SubjectDetailPage({ params }: Props) {
               </div>
               <StatCards />
             </Section>
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
             {hasSpecs && (
               <Section id="specializations" title={copy.specsTitle} intro={copy.specsIntro}>
@@ -206,6 +221,7 @@ export default async function SubjectDetailPage({ params }: Props) {
               </Section>
             )}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       <div className="mx-auto max-w-4xl space-y-12 px-4 py-10">
         {/* Overview */}
@@ -246,6 +262,8 @@ export default async function SubjectDetailPage({ params }: Props) {
           </section>
         )}
 =======
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
             <Section id="universities" title={copy.unisTitle} intro={copy.unisIntro}>
               <Note>No programmes listed yet for this field.</Note>
               <div className="mt-6">
@@ -258,7 +276,10 @@ export default async function SubjectDetailPage({ params }: Props) {
             <Section id="destinations" title={copy.destTitle} intro={copy.destIntro}>
               <CostTable lastCol="post-study" />
             </Section>
+<<<<<<< HEAD
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
             <Section id="careers" title={copy.careersTitle} intro={copy.careersIntro}>
               <CareersTable />

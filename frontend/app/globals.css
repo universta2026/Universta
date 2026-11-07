@@ -1,5 +1,8 @@
 @import "tailwindcss";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
 /* Text written in the Directus rich text editor */
 .rich-text { color: #334155; line-height: 1.7; }
@@ -12,6 +15,10 @@
 .rich-text a { color: #2563eb; text-decoration: underline; }
 .rich-text blockquote { border-left: 3px solid #cbd5e1; padding-left: 1rem; color: #475569; }
 .rich-text hr { border-color: #e2e8f0; }
+<<<<<<< HEAD
 =======
 @import "./universta.css";
 >>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
+=======
+@import "./universta.css";
+>>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
