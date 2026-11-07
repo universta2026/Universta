@@ -1,0 +1,52 @@
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Node / React
+node_modules/
+dist/
+build/
+.next/
+coverage/
+
+# Alembic config and sensitive credentials
+alembic.ini
+
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# OneNote temporary files
+*.onetoc2
+
+# Local databases
+*.sqlite3
+*.db
+
+# Backup and archive files
+*.zip
+*.one
+
+node_modules
+.next
+.env.local
+next-env.d.ts
