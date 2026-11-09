@@ -4,13 +4,11 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import type { Subject } from "@/lib/api";
-import { stripHtml } from "@/lib/html";
 import SubjectIcon from "./SubjectIcon";
 import { Crumbs, SecHead, withHighlight } from "./ui";
 import { LEVEL_OPTIONS } from "./site-config";
 
 export type SubjectsCopy = {
-  eyebrow: string;
   title: string; // may contain {word} -> blue highlight block
   intro: string;
   searchPlaceholder: string;
@@ -21,7 +19,7 @@ export type SubjectsCopy = {
   allIntro: string;
 };
 
-export type QuickLink = { name: string; slug: string };
+export type QuickLink = { name: string; slug: string; subjectSlug: string };
 
 // Subjects page: hero with search + the "All subjects" grid.
 // Search filtering is the same as before (subject name, description or specialization name).
@@ -42,23 +40,10 @@ export default function SubjectsExplorer({
     return subjects.filter(
       (s) =>
         s.name.toLowerCase().includes(q) ||
-<<<<<<< HEAD
-<<<<<<< HEAD
-        stripHtml(s.description).toLowerCase().includes(q) ||
-        s.specializations.some((sp) => sp.name.toLowerCase().includes(q))
-      );
-    });
-=======
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
         (s.description ?? "").toLowerCase().includes(q) ||
         s.specializations.some((sp) => sp.name.toLowerCase().includes(q)),
     );
   }, [subjects, query]);
-<<<<<<< HEAD
->>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
   const specCount = subjects.reduce((n, s) => n + s.specializations.length, 0);
   const allTitle = copy.allTitle
@@ -71,10 +56,7 @@ export default function SubjectsExplorer({
       <section className="page-hero">
         <div className="shell">
           <Crumbs items={[{ label: "Home", href: "/" }, { label: "Subjects" }]} />
-          <div className="mt-8">
-            <span className="eyebrow">{copy.eyebrow}</span>
-          </div>
-          <h1 className="t-h1 mt-2">{withHighlight(copy.title)}</h1>
+          <h1 className="t-h1 mt-6">{withHighlight(copy.title)}</h1>
           <p className="lead">{copy.intro}</p>
 
           <form className="searchbar" role="search" onSubmit={(e) => e.preventDefault()}>
@@ -105,7 +87,7 @@ export default function SubjectsExplorer({
             <div className="quick-links">
               <span>Popular:</span>
               {quickLinks.map((q) => (
-                <Link key={q.slug} href={`/specializations/${q.slug}`}>
+                <Link key={q.slug} href={`/subjects/${q.subjectSlug}/${q.slug}`}>
                   {q.name}
                 </Link>
               ))}
@@ -124,43 +106,6 @@ export default function SubjectsExplorer({
               {copy.emptyMessage}
             </div>
           ) : (
-<<<<<<< HEAD
-<<<<<<< HEAD
-            <ul className="space-y-4">
-              {visible.map((s) => (
-                <li key={s.id}>
-                  <Link
-                    href={`/subjects/${s.slug}`}
-                    className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300"
-                  >
-                    <SubjectIcon name={s.icon_key} />
-                    <div className="min-w-0">
-                      <h2 className="font-semibold text-slate-900">{s.name}</h2>
-                      {stripHtml(s.description) && (
-                        <p className="mt-1 line-clamp-2 text-sm text-slate-600">
-                          {stripHtml(s.description)}
-                        </p>
-                      )}
-                      {s.specializations.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {s.specializations.slice(0, 4).map((sp) => (
-                            <span
-                              key={sp.id}
-                              className="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-900"
-                            >
-                              {sp.name}
-                            </span>
-                          ))}
-                          {s.specializations.length > 4 && (
-                            <span className="px-1 py-1 text-xs text-slate-500">
-                              +{s.specializations.length - 4} more
-                            </span>
-                          )}
-                        </div>
-                      )}
-=======
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
             <div className="grid g-2">
               {visible.map((s) => {
                 const shown = s.specializations.slice(0, 6);
@@ -179,7 +124,7 @@ export default function SubjectsExplorer({
                         {shown.length > 0 && (
                           <div className="tags mt-4 above">
                             {shown.map((sp) => (
-                              <Link key={sp.id} className="tag tag-link" href={`/specializations/${sp.slug}`}>
+                              <Link key={sp.id} className="tag tag-link" href={`/subjects/${s.slug}/${sp.slug}`}>
                                 {sp.name}
                               </Link>
                             ))}
@@ -187,10 +132,6 @@ export default function SubjectsExplorer({
                           </div>
                         )}
                       </div>
-<<<<<<< HEAD
->>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
                     </div>
                   </div>
                 );

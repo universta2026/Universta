@@ -76,16 +76,18 @@ export const FOOTER_COLUMNS: { title: string; links: { label: string; href: stri
 
 // "Not sure which level fits?" explainer on the Subjects page.
 export const LEVEL_GUIDE = [
-  { name: "Foundation", duration: "1 year", blurb: "Students who need an extra year to meet entry requirements for a bachelor’s degree." },
+  { name: "Foundation", duration: "1 year", blurb: "Students who need an extra year to meet entry requirements for an undergraduate degree." },
   { name: "Diploma & certificate", duration: "1–2 years", blurb: "Practical, career-focused study — often a pathway into the second year of a degree." },
-  { name: "Bachelor’s degree", duration: "3–4 years", blurb: "Your first university degree, after finishing secondary school." },
-  { name: "Master’s degree", duration: "1–2 years", blurb: "Specialist or career-change study after a bachelor’s degree." },
-  { name: "PhD / Doctorate", duration: "3–5 years", blurb: "Original research under a supervisor, usually after a master’s degree." },
+  { name: "Undergraduate", duration: "3–4 years", blurb: "Your first university degree, after finishing secondary school." },
+  { name: "Postgraduate", duration: "1–2 years", blurb: "Specialist or career-change study after an undergraduate degree." },
+  { name: "MBA", duration: "1–2 years", blurb: "A business-focused postgraduate degree, often for people with some work experience." },
+  { name: "PGDM", duration: "2 years", blurb: "A postgraduate diploma in management — an industry-focused alternative to an MBA." },
+  { name: "PhD / Doctorate", duration: "3–5 years", blurb: "Original research under a supervisor, usually after a postgraduate degree." },
 ];
 
-// Options in the hero search "level" select and the lead forms.
-export const LEVEL_OPTIONS = ["Any level", "Foundation year", "Diploma & certificate", "Bachelor’s degree", "Master’s degree", "PhD / Doctorate"];
+// Study levels offered in the lead forms and the hero search select.
+export const LEAD_LEVELS = ["Foundation", "Diploma & certificate", "Undergraduate", "Postgraduate", "MBA", "PGDM", "PhD / Doctorate"];
+export const LEVEL_OPTIONS = ["Any level", ...LEAD_LEVELS];
 export const LEAD_DESTINATIONS = ["Australia", "Canada", "France", "Germany", "Ireland", "Japan", "Netherlands", "New Zealand", "United Kingdom", "United States"];
-export const LEAD_INTAKES = ["Jan 2027", "Sep 2027", "Jan 2028", "Later"];
 // Country rows in the "Where to study" / "Costs" tables (fees are placeholders until the data exists).
 export const TABLE_COUNTRIES = ["United Kingdom", "United States", "Canada", "Australia", "Germany", "Ireland"];

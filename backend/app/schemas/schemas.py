@@ -1,7 +1,14 @@
 import uuid
-from typing import Any
+from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    field_validator,
+    model_validator,
+)
 
 
 class ORMModel(BaseModel):
@@ -37,6 +44,8 @@ class StudyLevelOut(ORMModel):
     slug: str
     description: str | None = None
     duration: str | None = None
+    entry_label: Optional[str] = None
+    requirements: Optional[list[str]] = None
 
 
 class SubjectOut(ORMModel):
@@ -51,9 +60,53 @@ class SubjectListItem(SubjectOut):
     specializations: list[SpecializationOut]
 
 
+class SectionItem(ORMModel):
+    """One content item of the Subject Detail page (from subject_sections)."""
+
+    id: uuid.UUID
+    title: str
+    subtitle: str | None = None
+    body: str | None = None  # rich text HTML: the frontend must render it with <RichText>
+    url: str | None = None
+    is_sponsored: bool = False
+
+    @field_validator("url")
+    @classmethod
+    def allow_safe_url(cls, v: str | None) -> str | None:
+        # Editors can type anything: only safe links leave the API.
+        if not v:
+            return None
+        v = v.strip()
+        if v.startswith("#") or (v.startswith("/") and not v.startswith("//")):
+            return v
+        if v.lower().startswith(("https://", "mailto:", "tel:")):
+            return v
+        return None
+
+
 class SubjectDetail(SubjectOut):
     specializations: list[SpecializationOut]
     study_levels: list[StudyLevelOut]
+    why: SectionItem | None = None
+    industries: list[SectionItem] = Field(default_factory=list)
+    companies: list[SectionItem] = Field(default_factory=list)
+    courses: list[SectionItem] = Field(default_factory=list)
+    destinations: list[SectionItem] = Field(default_factory=list)
+    universities: list[SectionItem] = Field(default_factory=list)
+
+
+class LevelPageSections(ORMModel):
+    """Extra content of one Subject + Study Level page (from subject_sections)."""
+
+    about: SectionItem | None = None
+    why: SectionItem | None = None
+    industries: list[SectionItem] = Field(default_factory=list)
+    companies: list[SectionItem] = Field(default_factory=list)
+    advertisement: SectionItem | None = None
+    cta: SectionItem | None = None
+    courses: list[SectionItem] = Field(default_factory=list)
+    destinations: list[SectionItem] = Field(default_factory=list)
+    universities: list[SectionItem] = Field(default_factory=list)
 
 
 class PageContentOut(BaseModel):

@@ -1,22 +1,50 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useEffect, useId, useState, type FormEvent } from "react";
 import { Check } from "lucide-react";
 import Ph from "./Ph";
-import { LEAD_DESTINATIONS, LEAD_INTAKES } from "./site-config";
+import { DIAL_CODES, detectCountry } from "./phone-codes";
+import { LEAD_DESTINATIONS, LEAD_LEVELS } from "./site-config";
 
-// "Get free advice" form. DESIGN ONLY for now: it is not connected to the backend yet
+// What the page knows about the visitor's interest. It pre-selects the Subject and Level fields.
+export type LeadContext = {
+  subjects: string[]; // every subject name, for the dropdown
+  subject?: string; // the subject page the visitor is on
+  specialization?: string; // the specialization page the visitor is on
+  level?: string; // the study level page the visitor is on
+};
+
+// "Get free advice" form with 6 fields. DESIGN ONLY for now: it is not connected to the backend yet
 // (the `enquiries` table exists, but there is no API call for it in lib/api.ts).
 // When that endpoint is ready, send the form values inside onSubmit before setDone(true).
-export default function LeadForm({
-  compact = false,
-  cta = "Get free advice",
-}: {
-  compact?: boolean;
-  cta?: string;
-}) {
+export default function LeadForm({ context, cta = "Get free advice" }: { context?: LeadContext; cta?: string }) {
   const uid = useId();
   const [done, setDone] = useState(false);
+  const [iso, setIso] = useState("");
+
+  // Pick the country code from the visitor's location (time zone / browser language).
+  useEffect(() => {
+    setIso(detectCountry() ?? "");
+  }, []);
+
+  const subjects = context?.subjects ?? [];
+  const spec = context?.specialization;
+  const subjectDefault = spec ?? context?.subject ?? "";
+
+  const level = context?.level;
+  const levelOptions = [...LEAD_LEVELS];
+  let levelDefault = "";
+  if (level) {
+    const lv = level.toLowerCase();
+    levelDefault =
+      levelOptions.find((o) => o.toLowerCase() === lv) ??
+      levelOptions.find((o) => o.toLowerCase().startsWith(lv.split(/[\s/]/)[0])) ??
+      "";
+    if (!levelDefault) {
+      levelOptions.push(level);
+      levelDefault = level;
+    }
+  }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,34 +55,71 @@ export default function LeadForm({
     <form className={`lead-form${done ? " is-done" : ""}`} data-lead onSubmit={onSubmit}>
       <div className="field">
         <label htmlFor={`${uid}-name`}>Full name</label>
-        <input id={`${uid}-name`} className="input" required placeholder="Your name" />
+        <input id={`${uid}-name`} className="input" required autoComplete="name" placeholder="Your name" />
       </div>
+
       <div className="field">
-        <label htmlFor={`${uid}-contact`}>Email or phone</label>
-        <input id={`${uid}-contact`} className="input" required placeholder="So we can reply" />
-      </div>
-      {!compact && (
-        <div className="grid g-2 gap-16">
-          <div className="field">
-            <label htmlFor={`${uid}-dest`}>Destination</label>
-            <select id={`${uid}-dest`} className="select" defaultValue="Not sure yet">
-              <option>Not sure yet</option>
-              {LEAD_DESTINATIONS.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor={`${uid}-intake`}>Planned intake</label>
-            <select id={`${uid}-intake`} className="select" defaultValue="Choose intake">
-              <option>Choose intake</option>
-              {LEAD_INTAKES.map((i) => (
-                <option key={i}>{i}</option>
-              ))}
-            </select>
-          </div>
+        <label htmlFor={`${uid}-phone`}>Phone number</label>
+        <div className="phone-row">
+          <select className="select" aria-label="Country code" value={iso} onChange={(e) => setIso(e.target.value)}>
+            <option value="">Code</option>
+            {DIAL_CODES.map((d) => (
+              <option key={d.iso} value={d.iso} title={d.name}>
+                {d.iso} +{d.code}
+              </option>
+            ))}
+          </select>
+          <input
+            id={`${uid}-phone`}
+            className="input"
+            type="tel"
+            inputMode="tel"
+            required
+            autoComplete="tel-national"
+            placeholder="Phone number"
+          />
         </div>
-      )}
+      </div>
+
+      <div className="field">
+        <label htmlFor={`${uid}-email`}>Email address</label>
+        <input id={`${uid}-email`} className="input" type="email" required autoComplete="email" placeholder="you@example.com" />
+      </div>
+
+      <div className="field">
+        <label htmlFor={`${uid}-dest`}>Desired study destination</label>
+        <select id={`${uid}-dest`} className="select" defaultValue="">
+          <option value="">Select destination</option>
+          <option>Not sure yet</option>
+          {LEAD_DESTINATIONS.map((c) => (
+            <option key={c}>{c}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="field">
+        <label htmlFor={`${uid}-subject`}>Subject</label>
+        <select id={`${uid}-subject`} className="select" defaultValue={subjectDefault}>
+          <option value="">Select subject</option>
+          {spec && <option value={spec}>{context?.subject ? `${spec} — ${context.subject}` : spec}</option>}
+          {subjects.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* <div className="field">
+        <label htmlFor={`${uid}-level`}>Desired study level</label>
+        <select id={`${uid}-level`} className="select" defaultValue={levelDefault}>
+          <option value="">Select level</option>
+          {levelOptions.map((l) => (
+            <option key={l}>{l}</option>
+          ))}
+        </select>
+      </div> */}
+
       <button className="btn btn-primary btn-block" type="submit">
         {cta}
       </button>

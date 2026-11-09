@@ -15,7 +15,6 @@ export default async function SubjectsPage() {
   // Every text comes from Directus (page_content). The last value is the fallback.
   // In a title, a word wrapped in { } becomes the blue highlight block.
   const copy = {
-    eyebrow: text(content, "hero", "eyebrow", "Subjects & specializations"),
     title: text(content, "hero", "title", "Start with what you {love} to learn"),
     intro: text(
       content,
@@ -60,7 +59,7 @@ export default async function SubjectsPage() {
 
   // "Popular" = specializations marked is_featured in Directus.
   const featured = subjects.flatMap((s) =>
-    s.specializations.filter((sp) => sp.is_featured).map((sp) => ({ ...sp, subjectName: s.name })),
+    s.specializations.filter((sp) => sp.is_featured).map((sp) => ({ ...sp, subjectName: s.name, subjectSlug: s.slug })),
   );
 
   return (
@@ -68,7 +67,7 @@ export default async function SubjectsPage() {
       <SubjectsExplorer
         subjects={subjects}
         copy={copy}
-        quickLinks={featured.slice(0, 5).map((f) => ({ name: f.name, slug: f.slug }))}
+        quickLinks={featured.slice(0, 5).map((f) => ({ name: f.name, slug: f.slug, subjectSlug: f.subjectSlug }))}
       />
 
       {featured.length > 0 && (
@@ -77,7 +76,7 @@ export default async function SubjectsPage() {
             <SecHead eyebrow={copy.popularEyebrow} title={copy.popularTitle} />
             <div className="grid g-4">
               {featured.slice(0, 8).map((f) => (
-                <Link className="card" href={`/specializations/${f.slug}`} key={f.id}>
+                <Link className="card" href={`/subjects/${f.subjectSlug}/${f.slug}`} key={f.id}>
                   <span className="caption">{f.subjectName}</span>
                   <h3 className="card-title mt-2">{f.name}</h3>
                   <div className="card-meta mt-4">
@@ -96,7 +95,7 @@ export default async function SubjectsPage() {
       <section className="section">
         <div className="shell">
           <SecHead eyebrow={copy.levelsEyebrow} title={copy.levelsTitle} intro={copy.levelsIntro} />
-          <div className="grid g-5">
+          <div className="grid g-4">
             {LEVEL_GUIDE.map((l) => (
               <div className="card" key={l.name}>
                 <span className="tag">{l.duration}</span>
@@ -108,7 +107,7 @@ export default async function SubjectsPage() {
         </div>
       </section>
 
-      <CtaBand title={withHighlight(copy.ctaTitle)} text={copy.ctaText} />
+      <CtaBand title={withHighlight(copy.ctaTitle)} text={copy.ctaText} lead={{ subjects: subjects.map((s) => s.name) }} />
     </main>
   );
 }

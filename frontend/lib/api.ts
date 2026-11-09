@@ -61,9 +61,40 @@ export type StudyLevel = {
   duration: string | null;
 };
 
+// One item of the extra content on the subject page (rows of subject_sections in Directus).
+// `body` is rich text HTML: render it with <RichText>, never as plain text.
+export type SectionItem = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  body: string | null;
+  url: string | null;
+  is_sponsored: boolean;
+};
+
 export type SubjectDetail = Omit<Subject, "specializations"> & {
   specializations: Specialization[];
   study_levels: StudyLevel[];
+  // Optional in the type so the page still works if the API is an older version.
+  why?: SectionItem | null;
+  industries?: SectionItem[];
+  companies?: SectionItem[];
+  courses?: SectionItem[];
+  destinations?: SectionItem[];
+  universities?: SectionItem[];
+};
+
+// Extra content of one Subject + Study Level page (/subjects/engineering/bachelors).
+export type LevelPageSections = {
+  about?: SectionItem | null;
+  why?: SectionItem | null;
+  industries?: SectionItem[];
+  companies?: SectionItem[];
+  advertisement?: SectionItem | null;
+  cta?: SectionItem | null;
+  courses?: SectionItem[];
+  destinations?: SectionItem[];
+  universities?: SectionItem[];
 };
 
 export type SpecializationDetail = Specialization & {
@@ -84,4 +115,28 @@ export async function getSpecialization(slug: string): Promise<SpecializationDet
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`GET /specializations/${slug} failed with status ${res.status}`);
   return res.json();
+}
+
+// Never throws: if the API is down or older, the level page still shows its default content.
+export async function getLevelSections(subjectSlug: string, levelSlug: string): Promise<LevelPageSections> {
+  try {
+    const res = await get(`/subjects/${encodeURIComponent(subjectSlug)}/levels/${encodeURIComponent(levelSlug)}`);
+    if (!res.ok) return {};
+    return await res.json();
+  } catch {
+    return {};
+  }
+}
+
+// Extra content of one Specialization page (/subjects/engineering/civil-engineering). Never throws.
+export async function getSpecializationSections(subjectSlug: string, specSlug: string): Promise<LevelPageSections> {
+  try {
+    const res = await get(
+      `/subjects/${encodeURIComponent(subjectSlug)}/specializations/${encodeURIComponent(specSlug)}/sections`,
+    );
+    if (!res.ok) return {};
+    return await res.json();
+  } catch {
+    return {};
+  }
 }

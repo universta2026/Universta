@@ -1,27 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
-import { ChevronRight } from "lucide-react";
-import RichText from "@/components/RichText";
-import SubjectIcon from "@/components/SubjectIcon";
-import { getPageContent, getSubject, text } from "@/lib/api";
-import { stripHtml } from "@/lib/html";
-<<<<<<< HEAD
-=======
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
-import { ArrowRight, BookOpen, ChevronRight, FileCheck, Globe, Landmark, Layers, MessageCircle, Wallet, Award } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronRight, FileCheck, Globe, Landmark, Layers, MessageCircle, GraduationCap, Award } from "lucide-react";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
 import SubjectIcon from "@/components/SubjectIcon";
+import RichText from "@/components/RichText";
+import { SectionCards } from "@/components/SubjectBlocks";
 import {
-  AsideCard,
   AsideLead,
-  AsideLinks,
   CareersTable,
   CostTable,
   DetailHero,
@@ -29,7 +16,6 @@ import {
   Faq,
   fieldFaq,
   hrefFor,
-  Kv,
   Note,
   NextStepsBand,
   Ph,
@@ -37,10 +23,7 @@ import {
   StatCards,
 } from "@/components/ui";
 import { getPageContent, getSubject, getSubjects, text } from "@/lib/api";
-<<<<<<< HEAD
->>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
+import { getLevels } from "@/lib/levels";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -101,17 +84,33 @@ export default async function SubjectDetailPage({ params }: Props) {
       "Roles graduates commonly move into. Salaries vary a lot by country and experience.",
     ),
     faqTitle: text(content, "faq", "title", "Questions students ask"),
+    industriesTitle: text(content, "industries", "title", "Industries and sectors"),
+    industriesIntro: text(content, "industries", "intro", `Where ${short} skills are used.`),
+    companiesTitle: text(content, "companies", "title", "Companies and employers"),
+    companiesIntro: text(content, "companies", "intro", `Organisations connected with ${short}.`),
+    coursesTitle: text(content, "courses", "title", "Popular courses"),
+    coursesIntro: text(content, "courses", "intro", `Courses you can explore in ${short}.`),
   };
 
-  const lead = stripHtml(subject.description); // plain-text summary for the header
+  const levels = getLevels(subject.study_levels); // Undergraduate / Postgraduate naming + MBA and PGDM
   const hasSpecs = subject.specializations.length > 0;
-  const hasLevels = subject.study_levels.length > 0;
-  const others = allSubjects.filter((s) => s.id !== subject.id).slice(0, 5);
+  const hasLevels = levels.length > 0;
+  const why = subject.why?.body ? subject.why : null;
+  const industries = subject.industries ?? [];
+  const companies = subject.companies ?? [];
+  const courses = subject.courses ?? [];
+  const universities = subject.universities ?? [];
+  const destinations = subject.destinations ?? [];
+  const lead = { subjects: allSubjects.map((s) => s.name), subject: subject.name };
 
   const tabs = [
     { id: "overview", label: copy.overviewTitle, show: true },
     { id: "specializations", label: copy.specsTitle, show: hasSpecs },
+    { id: "why", label: "Why study", show: !!why },
+    { id: "industries", label: "Industries", show: industries.length > 0 },
+    { id: "companies", label: "Companies", show: companies.length > 0 },
     { id: "study-levels", label: copy.levelsTitle, show: hasLevels },
+    { id: "courses", label: "Courses", show: courses.length > 0 },
     { id: "universities", label: "Universities", show: true },
     { id: "destinations", label: "Where to study", show: true },
     { id: "careers", label: "Careers", show: true },
@@ -126,9 +125,12 @@ export default async function SubjectDetailPage({ params }: Props) {
           { label: "Subjects", href: "/subjects" },
           { label: subject.name },
         ]}
-        eyebrow="Subject"
         tile={<SubjectIcon name={subject.icon_key} size="lg" />}
-        title={subject.name}
+        title={
+          <>
+            Study <span className="hl">{subject.name}</span> abroad
+          </>
+        }
         lead={subject.description}
         actions={
           <>
@@ -139,33 +141,14 @@ export default async function SubjectDetailPage({ params }: Props) {
           </>
         }
         facts={[
-          { icon: Layers, label: "Levels", value: `${subject.study_levels.length} levels` },
+          { icon: Layers, label: "Levels", value: `${levels.length} levels` },
           { icon: BookOpen, label: "Specializations", value: subject.specializations.length },
           { icon: Landmark, label: "Universities", value: <Ph>NUMBER</Ph> },
-          {
-            icon: Wallet,
-            label: "Tuition from",
-            value: (
-              <>
-                <Ph>FEE</Ph> / yr
-              </>
-            ),
-          },
+          { icon: GraduationCap, label: "Courses", value: <Ph>NUMBER</Ph> },
         ]}
       />
       <SubNav items={tabs.map((t) => ({ id: t.id, label: t.label }))} />
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <p className="mt-6 text-xs font-semibold tracking-widest text-blue-600">SUBJECT</p>
-        <div className="mt-3 flex items-center gap-4">
-          <SubjectIcon name={subject.icon_key} />
-          <h1 className="text-3xl font-bold text-slate-900">{subject.name}</h1>
-        </div>
-        {lead && <p className="mt-3 line-clamp-2 text-slate-600">{lead}</p>}
-=======
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
       <DetailLayout
         main={
           <>
@@ -180,16 +163,12 @@ export default async function SubjectDetailPage({ params }: Props) {
               </div>
               <StatCards />
             </Section>
-<<<<<<< HEAD
->>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
             {hasSpecs && (
               <Section id="specializations" title={copy.specsTitle} intro={copy.specsIntro}>
                 <div className="grid g-2">
                   {subject.specializations.map((sp) => (
-                    <Link className="card" href={`/specializations/${sp.slug}`} key={sp.id}>
+                    <Link className="card" href={`/subjects/${subject.slug}/${sp.slug}`} key={sp.id}>
                       <div className="row between">
                         <h3 className="card-title">{sp.name}</h3>
                         <ChevronRight className="ico" aria-hidden />
@@ -201,10 +180,30 @@ export default async function SubjectDetailPage({ params }: Props) {
               </Section>
             )}
 
+            {why && (
+              <Section id="why" title={why.title}>
+                <div className="body-copy">
+                  <RichText html={why.body} />
+                </div>
+              </Section>
+            )}
+
+            {industries.length > 0 && (
+              <Section id="industries" title={copy.industriesTitle} intro={copy.industriesIntro}>
+                <SectionCards items={industries} />
+              </Section>
+            )}
+
+            {companies.length > 0 && (
+              <Section id="companies" title={copy.companiesTitle} intro={copy.companiesIntro}>
+                <SectionCards items={companies} />
+              </Section>
+            )}
+
             {hasLevels && (
               <Section id="study-levels" title={copy.levelsTitle} intro={copy.levelsIntro}>
                 <div className="grid g-3">
-                  {subject.study_levels.map((lvl) => (
+                  {levels.map((lvl) => (
                     <Link className="card" href={`/subjects/${subject.slug}/${lvl.slug}`} key={lvl.id}>
                       {lvl.duration && <span className="tag">{lvl.duration}</span>}
                       <h3 className="card-title mt-4">
@@ -221,51 +220,18 @@ export default async function SubjectDetailPage({ params }: Props) {
               </Section>
             )}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <div className="mx-auto max-w-4xl space-y-12 px-4 py-10">
-        {/* Overview */}
-        <section id="overview" className="scroll-mt-16">
-          <h2 className="text-xl font-bold">{copy.overviewTitle}</h2>
-          {lead ? (
-            <RichText html={subject.description ?? ""} className="mt-3" />
-          ) : (
-            <p className="mt-3 text-slate-700">Explore studying {subject.name} abroad.</p>
-          )}
-        </section>
+            {courses.length > 0 && (
+              <Section id="courses" title={copy.coursesTitle} intro={copy.coursesIntro}>
+                <SectionCards items={courses} linkLabel="View course" />
+              </Section>
+            )}
 
-        {/* Specializations */}
-        {hasSpecs && (
-          <section id="specializations" className="scroll-mt-16 border-t border-slate-200 pt-10">
-            <h2 className="text-xl font-bold">{copy.specsTitle}</h2>
-            <p className="mt-2 text-sm text-slate-600">{copy.specsIntro}</p>
-            <ul className="mt-5 grid gap-4 sm:grid-cols-2">
-              {subject.specializations.map((sp) => (
-                <li key={sp.id}>
-                  <Link
-                    href={`/specializations/${sp.slug}`}
-                    className="flex h-full items-start justify-between gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-blue-300"
-                  >
-                    <div>
-                      <h3 className="font-semibold text-slate-900">{sp.name}</h3>
-                      {stripHtml(sp.description) && (
-                        <p className="mt-1 line-clamp-3 text-sm text-slate-600">
-                          {stripHtml(sp.description)}
-                        </p>
-                      )}
-                    </div>
-                    <ChevronRight size={18} className="mt-1 shrink-0 text-slate-400" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-=======
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
             <Section id="universities" title={copy.unisTitle} intro={copy.unisIntro}>
-              <Note>No programmes listed yet for this field.</Note>
+              {universities.length > 0 ? (
+                <SectionCards items={universities} linkLabel="Visit university" />
+              ) : (
+                <Note>No programmes listed yet for this field.</Note>
+              )}
               <div className="mt-6">
                 <a className="btn btn-outline" href={hrefFor("universities")}>
                   Browse all universities
@@ -274,12 +240,13 @@ export default async function SubjectDetailPage({ params }: Props) {
             </Section>
 
             <Section id="destinations" title={copy.destTitle} intro={copy.destIntro}>
+              {destinations.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <SectionCards items={destinations} linkLabel="Learn more" />
+                </div>
+              )}
               <CostTable lastCol="post-study" />
             </Section>
-<<<<<<< HEAD
->>>>>>> b52474e6ff028c1a093a3a6d1612d705d8f57320
-=======
->>>>>>> f68f3c9edb917d636d8b39bcce28650d83c63881
 
             <Section id="careers" title={copy.careersTitle} intro={copy.careersIntro}>
               <CareersTable />
@@ -290,24 +257,7 @@ export default async function SubjectDetailPage({ params }: Props) {
             </Section>
           </>
         }
-        aside={
-          <>
-            <AsideLead about={short} />
-            <AsideCard title="At a glance">
-              <Kv
-                rows={[
-                  ["Levels", hasLevels ? subject.study_levels.map((l) => l.name).join(", ") : <Ph key="l">LEVELS</Ph>],
-                  ["Typical duration", "1–4 years"],
-                  ["English test", "IELTS / TOEFL / PTE"],
-                  ["Intakes", "Sep · Jan · Feb"],
-                ]}
-              />
-            </AsideCard>
-            {others.length > 0 && (
-              <AsideLinks title="Other subjects" links={others.map((s) => ({ label: s.name, href: `/subjects/${s.slug}` }))} />
-            )}
-          </>
-        }
+        aside={<AsideLead about={short} lead={lead} />}
       />
 
       <NextStepsBand

@@ -2,7 +2,7 @@
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, ChevronRight, Info, Landmark, Globe, Wallet, type LucideIcon } from "lucide-react";
-import LeadForm from "./LeadForm";
+import LeadForm, { type LeadContext } from "./LeadForm";
 import Ph from "./Ph";
 import { NAV, navHref, TABLE_COUNTRIES } from "./site-config";
 
@@ -69,7 +69,6 @@ export type Fact = { icon: LucideIcon; label: string; value: ReactNode };
 
 export function DetailHero({
   crumbs,
-  eyebrow,
   tile,
   title,
   lead,
@@ -77,7 +76,6 @@ export function DetailHero({
   facts,
 }: {
   crumbs: { label: string; href?: string }[];
-  eyebrow: string;
   tile?: ReactNode;
   title: ReactNode;
   lead?: string | null;
@@ -91,8 +89,7 @@ export function DetailHero({
         <div className="head">
           {tile}
           <div className="head-main">
-            <span className="eyebrow">{eyebrow}</span>
-            <h1 className="t-h1">{title}</h1>
+            <h1 className="t-h1 mt-0">{title}</h1>
             {lead && <p className="lead">{lead}</p>}
           </div>
           {actions && (
@@ -303,7 +300,7 @@ export function NextStepsBand({ title = "Your next step", items }: { title?: str
   );
 }
 
-export function CtaBand({ title, text }: { title: ReactNode; text: string }) {
+export function CtaBand({ title, text, lead }: { title: ReactNode; text: string; lead?: LeadContext }) {
   return (
     <section className="section bg-ink" id="advice">
       <div className="shell cta-band">
@@ -323,19 +320,19 @@ export function CtaBand({ title, text }: { title: ReactNode; text: string }) {
             />
           </div>
         </div>
-        <LeadForm />
+        <LeadForm context={lead} />
       </div>
     </section>
   );
 }
 
-export function AsideLead({ about }: { about: string }) {
+export function AsideLead({ about, lead }: { about: string; lead?: LeadContext }) {
   return (
     <div className="aside-cta">
       <span className="eyebrow">Free guidance</span>
       <h3 className="t-h3 mt-2">Talk to an expert about {about}</h3>
-      <p className="small mt-2">A verified adviser will help you shortlist, apply and plan your budget — free.</p>
-      <LeadForm compact cta="Talk to an expert" />
+      <p className="small mt-2">A verified adviser will help you shortlist, apply and plan your budget-free.</p>
+      <LeadForm context={lead} cta="Talk to an expert" />
     </div>
   );
 }
@@ -371,7 +368,7 @@ export function fieldFaq(name: string): { q: string; a: ReactNode }[] {
   return [
     {
       q: `Do I need a background in ${name} to study it abroad?`,
-      a: "For a bachelor’s, usually not — you need the right school subjects. For a master’s, most universities expect a related bachelor’s degree, but some programmes are designed for career changers.",
+      a: "For an undergraduate degree, usually not — you need the right school subjects. For a postgraduate degree, most universities expect a related undergraduate degree, but some programmes are designed for career changers.",
     },
     {
       q: `Which country is cheapest for ${name}?`,
