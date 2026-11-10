@@ -1,4 +1,4 @@
-// Shared page building blocks (server components) — the Universta design system as React.
+// Shared page building blocks (server components) - the Universta design system as React.
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, ChevronRight, Info, Landmark, Globe, Wallet, type LucideIcon } from "lucide-react";
@@ -305,7 +305,6 @@ export function CtaBand({ title, text, lead }: { title: ReactNode; text: string;
     <section className="section bg-ink" id="advice">
       <div className="shell cta-band">
         <div>
-          <span className="eyebrow">Free guidance</span>
           <h2 className="t-h1 mt-4">{title}</h2>
           <p className="lead mt-4">{text}</p>
           <div className="mt-8">
@@ -314,7 +313,6 @@ export function CtaBand({ title, text, lead }: { title: ReactNode; text: string;
                 <>
                   A personal shortlist in <Ph>TIME</Ph>
                 </>,
-                "No pressure, no hidden fees",
                 "For students from any country",
               ]}
             />
@@ -328,10 +326,8 @@ export function CtaBand({ title, text, lead }: { title: ReactNode; text: string;
 
 export function AsideLead({ about, lead }: { about: string; lead?: LeadContext }) {
   return (
-    <div className="aside-cta">
-      <span className="eyebrow">Free guidance</span>
-      <h3 className="t-h3 mt-2">Talk to an expert about {about}</h3>
-      <p className="small mt-2">A verified adviser will help you shortlist, apply and plan your budget-free.</p>
+    <div className="aside-cta" id="advice">
+      <h3 className="t-h3 mt-2">Talk to an expert about {about} abroad</h3>
       <LeadForm context={lead} cta="Talk to an expert" />
     </div>
   );
@@ -368,11 +364,11 @@ export function fieldFaq(name: string): { q: string; a: ReactNode }[] {
   return [
     {
       q: `Do I need a background in ${name} to study it abroad?`,
-      a: "For an undergraduate degree, usually not — you need the right school subjects. For a postgraduate degree, most universities expect a related undergraduate degree, but some programmes are designed for career changers.",
+      a: "For an undergraduate degree, usually not - you need the right school subjects. For a postgraduate degree, most universities expect a related undergraduate degree, but some programmes are designed for career changers.",
     },
     {
       q: `Which country is cheapest for ${name}?`,
-      a: "Public universities in Germany charge low or no tuition for most programmes. Compare living costs too — they often matter more than fees.",
+      a: "Public universities in Germany charge low or no tuition for most programmes. Compare living costs too - they often matter more than fees.",
     },
     {
       q: "Which English test should I take?",
@@ -380,7 +376,7 @@ export function fieldFaq(name: string): { q: string; a: ReactNode }[] {
     },
     {
       q: "Can I work while I study?",
-      a: "Most popular destinations allow part-time work during term. Limits differ by country — check each country’s student visa guide.",
+      a: "Most popular destinations allow part-time work during term. Limits differ by country - check each country’s student visa guide.",
     },
   ];
 }

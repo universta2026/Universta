@@ -20,7 +20,7 @@ async function load(slug: string, segment: string, levelSlug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, segment, level } = await params;
   const data = await load(slug, segment, level);
-  return { title: data ? `${data.level.name} in ${data.spec.name} | Universta` : "Page not found | Universta" };
+  return { title: data ? `Study ${data.level.name} in ${data.spec.name} abroad | Universta` : "Page not found | Universta" };
 }
 
 export default async function SpecializationLevelPage({ params }: Props) {
@@ -28,7 +28,7 @@ export default async function SpecializationLevelPage({ params }: Props) {
   const data = await load(slug, segment, level);
   if (!data) notFound();
   const { subject, spec, level: lvl, levels } = data;
-  const subjectNames = (await getSubjects().catch(() => [])).map((s) => s.name); // for the form dropdown
+  const subjectNames = (await getSubjects().catch(() => [])).map((s) => ({ name: s.name, specializations: s.specializations.map((x) => x.name) })); // for the form dropdown
 
   const sections = await getSpecializationLevelSections(subject.slug, spec.slug, lvl.slug);
 

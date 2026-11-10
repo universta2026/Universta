@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { ArrowRight, Award, BookOpen, FileCheck, Globe, Landmark, Layers, MessageCircle, GraduationCap } from "lucide-react";
 import RichText from "@/components/RichText";
+import { plainText } from "@/lib/plain-text";
 import type { LevelPageSections, Specialization, StudyLevel, SubjectDetail } from "@/lib/api";
 import type { LeadContext } from "./LeadForm";
 import { AdBlock, CtaBlock, SectionCards } from "./SubjectBlocks";
@@ -48,7 +49,7 @@ export default function SpecializationView({
   const cta = sections.cta ?? null;
 
   const intro =
-    spec.description ??
+    plainText(spec.description) ||
     `A focused path within ${subject.name}. See what you’ll study, where to study it and the careers it leads to.`;
 
   return (
@@ -148,7 +149,7 @@ export default function SpecializationView({
                       <h3 className="card-title mt-4">
                         {lvl.name} in {spec.name}
                       </h3>
-                      {lvl.description && <p className="muted small mt-2">{lvl.description}</p>}
+                      {lvl.description && <p className="muted small mt-2">{plainText(lvl.description)}</p>}
                       <span className="link-arrow mt-4">
                         See {lvl.name} options
                         <ArrowRight className="ico" aria-hidden />
@@ -201,7 +202,7 @@ export default function SpecializationView({
             <Section
               id="learn"
               title="What you’ll study"
-              intro="Typical modules. Exact content varies by university — check each course page."
+              intro="Typical modules. Exact content varies by university - check each course page."
             >
               <div className="grid g-2">
                 {[1, 2, 3, 4].map((n) => (
@@ -223,7 +224,7 @@ export default function SpecializationView({
               <CareersTable />
             </Section>
 
-            <Section id="faq" title="Questions students ask">
+            <Section id="faq" title="Frequently asked questions">
               <Faq items={fieldFaq(spec.name)} />
             </Section>
           </>

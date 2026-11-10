@@ -3,12 +3,13 @@
 import { useEffect, useId, useState, type FormEvent } from "react";
 import { Check } from "lucide-react";
 import Ph from "./Ph";
+import SubjectPicker, { type SubjectGroup } from "./SubjectPicker";
 import { DIAL_CODES, detectCountry } from "./phone-codes";
-import { LEAD_DESTINATIONS, LEAD_LEVELS } from "./site-config";
+import { FORM_LEVELS, LEAD_DESTINATIONS } from "./site-config";
 
 // What the page knows about the visitor's interest. It pre-selects the Subject and Level fields.
 export type LeadContext = {
-  subjects: string[]; // every subject name, for the dropdown
+  subjects: SubjectGroup[]; // every subject with its specializations, for the dropdown
   subject?: string; // the subject page the visitor is on
   specialization?: string; // the specialization page the visitor is on
   level?: string; // the study level page the visitor is on
@@ -32,7 +33,7 @@ export default function LeadForm({ context, cta = "Get free advice" }: { context
   const subjectDefault = spec ?? context?.subject ?? "";
 
   const level = context?.level;
-  const levelOptions = [...LEAD_LEVELS];
+  const levelOptions = [...FORM_LEVELS];
   let levelDefault = "";
   if (level) {
     const lv = level.toLowerCase();
@@ -98,37 +99,30 @@ export default function LeadForm({ context, cta = "Get free advice" }: { context
       </div>
 
       <div className="field">
-        <label htmlFor={`${uid}-subject`}>Subject</label>
-        <select id={`${uid}-subject`} className="select" defaultValue={subjectDefault}>
-          <option value="">Select subject</option>
-          {spec && <option value={spec}>{context?.subject ? `${spec} — ${context.subject}` : spec}</option>}
-          {subjects.map((s) => (
-            <option key={s} value={s}>
-              {s}
+        <label htmlFor={`${uid}-subject`}>Subject and specialization</label>
+        <SubjectPicker id={`${uid}-subject`} groups={subjects} defaultValue={subjectDefault} />
+      </div>
+
+      <div className="field">
+        <label htmlFor={`${uid}-level`}>Study level</label>
+        <select id={`${uid}-level`} name="level" className="select" defaultValue={levelDefault}>
+          <option value="">Select study level</option>
+          {levelOptions.map((l) => (
+            <option key={l} value={l}>
+              {l}
             </option>
           ))}
         </select>
       </div>
 
-      {/* <div className="field">
-        <label htmlFor={`${uid}-level`}>Desired study level</label>
-        <select id={`${uid}-level`} className="select" defaultValue={levelDefault}>
-          <option value="">Select level</option>
-          {levelOptions.map((l) => (
-            <option key={l}>{l}</option>
-          ))}
-        </select>
-      </div> */}
-
       <button className="btn btn-primary btn-block" type="submit">
         {cta}
       </button>
-      <p className="caption">Free, no pressure. We’ll only contact you about your study plans.</p>
       <div className="ok">
         <span className="ico-tile" style={{ background: "#E7F4EF", color: "var(--success)" }}>
           <Check className="ico" aria-hidden />
         </span>
-        <h4 className="t-h4 mt-4">Thanks — we’ve got it.</h4>
+        <h4 className="t-h4 mt-4">Thanks - we’ve got it.</h4>
         <p className="muted small mt-2">
           An adviser will reply within <Ph>TIME</Ph>. No spam, ever.
         </p>

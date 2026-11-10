@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, segment } = await params;
   const data = await load(slug, segment);
   if (!data) return { title: "Page not found | Universta" };
-  if (data.spec) return { title: `${data.spec.name} | Universta` };
-  return { title: `${data.level!.name} in ${data.subject.name} | Universta` };
+  if (data.spec) return { title: `Study ${data.spec.name} abroad | Universta` };
+  return { title: `Study ${data.level!.name} in ${data.subject.name} abroad | Universta` };
 }
 
 export default async function SubjectSegmentPage({ params }: Props) {
@@ -34,7 +34,7 @@ export default async function SubjectSegmentPage({ params }: Props) {
   const data = await load(slug, segment);
   if (!data) notFound();
   const { subject, levels, spec, level } = data;
-  const subjectNames = (await getSubjects().catch(() => [])).map((s) => s.name); // for the form dropdown
+  const subjectNames = (await getSubjects().catch(() => [])).map((s) => ({ name: s.name, specializations: s.specializations.map((x) => x.name) })); // for the form dropdown
 
   if (spec) {
     // CMS blocks for this specialization (rows of subject_sections that have a specialization)

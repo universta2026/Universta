@@ -50,7 +50,7 @@ const EXTRA_LEVELS: StudyLevel[] = [
     id: "extra-pgdm",
     name: "PGDM",
     slug: "pgdm",
-    description: "A postgraduate diploma in management — an industry-focused alternative to an MBA.",
+    description: "A postgraduate diploma in management - an industry-focused alternative to an MBA.",
     duration: "2 years",
   },
 ];

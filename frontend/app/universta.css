@@ -1,11 +1,11 @@
 /* =========================================================
-   Universta — design system (ported from the Universta prototype, Brand Kit v1.0)
+   Universta - design system (ported from the Universta prototype, Brand Kit v1.0)
    Lives in the Tailwind "components" layer, so Tailwind utility classes
    (mt-4, flex, ...) can still override anything here.
    ========================================================= */
 @layer components {
   /* =========================================================
-   Universta — design system
+   Universta - design system
    Built from Brand Guidelines v1.0 (Oct 2026)
    Colour · Type · Shape (4/8/12/20) · Spacing (x8) · Highlight block
    ========================================================= */
@@ -244,7 +244,7 @@
     line-height: 22px;
   }
 
-  /* Signature device — the highlight block */
+  /* Signature device - the highlight block */
   .hl {
     background: var(--blue);
     color: var(--white);
@@ -270,7 +270,7 @@
     padding: 0 .2em;
   }
 
-  /* Bracketed placeholder content — replace before publishing */
+  /* Bracketed placeholder content - replace before publishing */
   .ph {
     color: var(--blue-700);
     background: var(--blue-50);
@@ -2127,3 +2127,135 @@
   }
 
 }
+  /* Subject + specialization picker in the lead form */
+  .subject-picker {
+    position: relative;
+  }
+
+  .subject-picker-btn[aria-expanded="true"] {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-100);
+  }
+
+  .subject-picker-btn {
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .subject-picker-panel {
+    margin-top: 8px;
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--r-btn);
+    overflow: hidden;
+  }
+
+  .sp-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--slate-200);
+    color: var(--slate-500);
+  }
+
+  .sp-search .ico {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+
+  .sp-search input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .sp-empty {
+    padding: 14px 12px;
+    font-size: 14px;
+    color: var(--slate-500);
+  }
+
+  .subject-picker-list {
+    margin: 0;
+    padding: 6px;
+    max-height: 240px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style: none;
+  }
+
+  .subject-picker-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sp-row {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sp-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    font: 500 14px/20px var(--font-body);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .sp-toggle {
+    width: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--slate-500);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .sp-item:hover,
+  .sp-toggle:hover {
+    background: var(--blue-100);
+  }
+
+  .sp-item[aria-selected="true"] {
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .sp-item .ico,
+  .sp-toggle .ico {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sp-sub {
+    margin: 2px 0 6px 14px !important;
+    padding-left: 10px !important;
+    border-left: 2px solid var(--slate-200);
+  }
+
+  .sp-sub .sp-item {
+    font-weight: 400;
+    padding: 8px 12px;
+  }
