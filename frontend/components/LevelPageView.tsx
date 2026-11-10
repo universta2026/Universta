@@ -78,6 +78,8 @@ export default function LevelPageView({
   sections = {},
   specializations = [],
   subjectSlug,
+  specSlug,
+  allLevels = [],
 }: {
   crumbs: { label: string; href?: string }[]; // full trail, ending with the level
   fieldName: string; // e.g. "Data Science"
@@ -87,6 +89,8 @@ export default function LevelPageView({
   sections?: LevelPageSections; // CMS blocks (subject_sections rows for this subject + level)
   specializations?: Specialization[]; // subject-level page only: linked as "<specialization> + this level"
   subjectSlug?: string;
+  specSlug?: string; // specialization-level page only: enables the "levels to study" block
+  allLevels?: StudyLevel[]; // the subject's levels, linked as "<this specialization> + that level"
 }) {
   const kind = levelKindOf(level);
   const duration = level.duration ?? undefined;
@@ -102,6 +106,7 @@ export default function LevelPageView({
   const ad = sections.advertisement ?? null;
   const cta = sections.cta ?? null;
   const hasSpecs = !!subjectSlug && specializations.length > 0;
+  const otherLevels = specSlug ? allLevels.filter((l) => l.slug !== level.slug) : [];
   const hasProgrammes = courses.length > 0 || universities.length > 0;
 
   return (
@@ -147,6 +152,7 @@ export default function LevelPageView({
           { id: "why", label: "Why this level", show: !!why },
           { id: "industries", label: "Industries", show: industries.length > 0 },
           { id: "companies", label: "Companies", show: companies.length > 0 },
+          { id: "levels", label: "Other levels", show: otherLevels.length > 0 },
           { id: "courses", label: "Courses", show: courses.length > 0 },
           { id: "destinations", label: "Where to study", show: destinations.length > 0 },
           { id: "universities", label: "Universities", show: universities.length > 0 },
@@ -215,6 +221,26 @@ export default function LevelPageView({
             {companies.length > 0 && (
               <Section id="companies" title={`Popular companies for ${lvl} in ${fieldName}`}>
                 <SectionCards items={companies} />
+              </Section>
+            )}
+
+            {otherLevels.length > 0 && (
+              <Section id="levels" title={`Other levels to study ${fieldName}`} intro="Compare this with the other study levels.">
+                <div className="grid g-3">
+                  {otherLevels.map((l) => (
+                    <Link className="card" href={`/subjects/${subjectSlug}/${specSlug}/${l.slug}`} key={l.id}>
+                      {l.duration && <span className="tag">{l.duration}</span>}
+                      <h3 className="card-title mt-4">
+                        {l.name} in {fieldName}
+                      </h3>
+                      {l.description && <p className="muted small mt-2">{l.description}</p>}
+                      <span className="link-arrow mt-4">
+                        See {l.name} options
+                        <ArrowRight className="ico" aria-hidden />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
               </Section>
             )}
 

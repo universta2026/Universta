@@ -140,3 +140,21 @@ export async function getSpecializationSections(subjectSlug: string, specSlug: s
     return {};
   }
 }
+
+// Extra content of one Specialization + Study Level page
+// (/subjects/engineering/civil-engineering/bachelors). Never throws.
+export async function getSpecializationLevelSections(
+  subjectSlug: string,
+  specSlug: string,
+  levelSlug: string,
+): Promise<LevelPageSections> {
+  try {
+    const res = await get(
+      `/subjects/${encodeURIComponent(subjectSlug)}/specializations/${encodeURIComponent(specSlug)}/levels/${encodeURIComponent(levelSlug)}/sections`,
+    );
+    if (!res.ok) return {};
+    return await res.json();
+  } catch {
+    return {};
+  }
+}

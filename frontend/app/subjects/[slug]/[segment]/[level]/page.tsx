@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import LevelPageView from "@/components/LevelPageView";
-import { getSubject, getSubjects } from "@/lib/api";
+import { getSpecializationLevelSections, getSubject, getSubjects } from "@/lib/api";
 import { getLevels } from "@/lib/levels";
 
 type Props = { params: Promise<{ slug: string; segment: string; level: string }> };
@@ -14,7 +14,7 @@ async function load(slug: string, segment: string, levelSlug: string) {
   const spec = subject.specializations.find((s) => s.slug === segment);
   const level = getLevels(subject.study_levels).find((l) => l.slug === levelSlug);
   if (!spec || !level) return null;
-  return { subject, spec, level };
+  return { subject, spec, level, levels: getLevels(subject.study_levels) };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -27,11 +27,17 @@ export default async function SpecializationLevelPage({ params }: Props) {
   const { slug, segment, level } = await params;
   const data = await load(slug, segment, level);
   if (!data) notFound();
-  const { subject, spec, level: lvl } = data;
+  const { subject, spec, level: lvl, levels } = data;
   const subjectNames = (await getSubjects().catch(() => [])).map((s) => s.name); // for the form dropdown
+
+  const sections = await getSpecializationLevelSections(subject.slug, spec.slug, lvl.slug);
 
   return (
     <LevelPageView
+      sections={sections}
+      subjectSlug={subject.slug}
+      specSlug={spec.slug}
+      allLevels={levels}
       crumbs={[
         { label: "Home", href: "/" },
         { label: "Subjects", href: "/subjects" },

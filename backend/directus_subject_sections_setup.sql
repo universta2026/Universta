@@ -90,7 +90,7 @@ VALUES
 ('subject_sections', 'specialization_id', 'm2o', 'select-dropdown-m2o',
  '{"template":"{{name}}"}'::json, 'related-values', '{"template":"{{name}}"}'::json,
  false, false, 12, 'full',
- 'Leave EMPTY unless this item is only for one specialization page (e.g. Civil Engineering). It must belong to the subject chosen above.', false),
+ 'Leave EMPTY unless this item is for a specialization page (e.g. Civil Engineering). Set it together with Study level to target the specialization + level page (e.g. Civil Engineering + Bachelors). It must belong to the subject chosen above.', false),
 
 ('subject_sections', 'created_at', 'date-created', 'datetime', NULL, 'datetime', NULL, true, true, 13, 'half', NULL, false),
 ('subject_sections', 'updated_at', 'date-updated', 'datetime', NULL, 'datetime', NULL, true, true, 14, 'half', NULL, false);

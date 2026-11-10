@@ -172,6 +172,42 @@ def get_subject_level_sections(slug: str, level_slug: str, db: Session = Depends
 
 
 @router.get(
+    "/subjects/{slug}/specializations/{spec_slug}/levels/{level_slug}/sections",
+    response_model=schemas.LevelPageSections,
+)
+def get_specialization_level_sections(
+    slug: str, spec_slug: str, level_slug: str, db: Session = Depends(get_db)
+):
+    """Extra content blocks of one Specialization + Study Level page
+    (/subjects/engineering/civil-engineering/bachelors)."""
+    subject = get_published_subject(db, slug)
+    spec = db.scalar(
+        select(Specialization).where(
+            Specialization.subject_id == subject.id,
+            Specialization.slug == spec_slug,
+            Specialization.status == PUBLISHED,
+        )
+    )
+    if spec is None:
+        raise HTTPException(status_code=404, detail="Specialization not found")
+    level = db.scalar(select(StudyLevel).where(StudyLevel.slug == level_slug))
+    if level is None:  # MBA / PGDM are added by the frontend: no blocks for them
+        return schemas.LevelPageSections()
+
+    rows = db.scalars(
+        select(SubjectSection)
+        .where(
+            SubjectSection.subject_id == subject.id,
+            SubjectSection.specialization_id == spec.id,
+            SubjectSection.study_level_id == level.id,
+            SubjectSection.status == PUBLISHED,
+        )
+        .order_by(SubjectSection.display_order, SubjectSection.title)
+    ).all()
+    return build_page_sections(rows)
+
+
+@router.get(
     "/subjects/{slug}/specializations/{spec_slug}/sections",
     response_model=schemas.LevelPageSections,
 )

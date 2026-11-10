@@ -84,3 +84,37 @@ WHERE NOT EXISTS (
     WHERE ss.subject_id = s.id AND ss.specialization_id = sp.id AND ss.section = v.section
       AND ss.title = REPLACE(v.title, '{spec}', sp.name)
 );
+
+-- SAMPLE content for the Specialization + Level page, e.g. /subjects/<subject>/<specialization>/<level> (replace in Directus).
+-- First published specialization + first published level of the first 3 subjects. Safe to run more than once.
+INSERT INTO subject_sections
+    (id, subject_id, specialization_id, study_level_id, section, title, subtitle, body, url, is_sponsored, status, display_order)
+SELECT gen_random_uuid(), s.id, sp.id, l.id, v.section,
+       REPLACE(REPLACE(v.title, '{spec}', sp.name), '{level}', l.name),
+       v.subtitle, v.body, v.url, v.sp, 'published', v.ord
+FROM (SELECT id FROM subjects WHERE status = 'published' ORDER BY display_order, name LIMIT 3) AS s
+JOIN LATERAL (
+    SELECT id, name FROM specializations
+    WHERE subject_id = s.id AND status = 'published' ORDER BY display_order, name LIMIT 1
+) AS sp ON true
+JOIN LATERAL (
+    SELECT sl.id, sl.name FROM study_levels sl
+    JOIN subject_study_levels ssl ON ssl.study_level_id = sl.id AND ssl.subject_id = s.id
+    WHERE sl.status = 'published' ORDER BY sl.display_order, sl.name LIMIT 1
+) AS l ON true
+CROSS JOIN (VALUES
+    ('about',         'About {level} in {spec}',          NULL, '<p>Sample text: what a {level} in {spec} looks like.</p>', NULL, false, 1),
+    ('why',           'Why choose a {level} in {spec}?',  NULL, '<p>Sample text: reasons to choose this path.</p>',          NULL, false, 1),
+    ('industry',      'Technology',                       NULL, '<p>Sample industry.</p>',                                   NULL, false, 1),
+    ('company',       'Sample Company Ltd',               NULL, '<p>Sample company.</p>',                                    'https://example.com', true, 1),
+    ('advertisement', 'Sample advertisement',             NULL, '<p>Sample sponsored message.</p>',                          'https://example.com', true, 1),
+    ('cta',           'Get free advice on {spec}',        NULL, '<p>Sample call to action text.</p>',                        NULL, false, 1),
+    ('course',        'Sample Course',                    'Sample University', '<p>Sample course.</p>',                      'https://example.com', true, 1),
+    ('destination',   'United Kingdom',                   NULL, '<p>Sample destination.</p>',                                NULL, false, 1),
+    ('university',    'Sample University',                'London', '<p>Sample university.</p>',                             'https://example.com', true, 1)
+) AS v(section, title, subtitle, body, url, sp, ord)
+WHERE NOT EXISTS (
+    SELECT 1 FROM subject_sections ss
+    WHERE ss.subject_id = s.id AND ss.specialization_id = sp.id AND ss.study_level_id = l.id AND ss.section = v.section
+      AND ss.title = REPLACE(REPLACE(v.title, '{spec}', sp.name), '{level}', l.name)
+);
