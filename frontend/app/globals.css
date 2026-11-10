@@ -1,1 +1,70 @@
 @import "tailwindcss";
+@import "./universta.css";
+
+/* Text written in the Directus rich-text editor (rendered by components/RichText.tsx).
+   Uses the brand variables from universta.css. Tailwind resets lists and headings,
+   so bullets, numbers and sizes are set here. */
+@layer components {
+  .rich-text > * + * {
+    margin-top: 12px;
+  }
+
+  .rich-text ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+
+  .rich-text ol {
+    list-style: decimal;
+    padding-left: 20px;
+  }
+
+  .rich-text li + li {
+    margin-top: 4px;
+  }
+
+  .rich-text h3 {
+    font: 700 18px/25px var(--font-head);
+    color: var(--ink);
+  }
+
+  .rich-text h4 {
+    font: 700 16px/22px var(--font-head);
+    color: var(--ink);
+  }
+
+  .rich-text strong,
+  .rich-text b {
+    font-weight: 700;
+  }
+
+  .rich-text em,
+  .rich-text i {
+    font-style: italic;
+  }
+
+  .rich-text u {
+    text-decoration: underline;
+  }
+
+  .rich-text s {
+    text-decoration: line-through;
+  }
+
+  .rich-text a {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .rich-text blockquote {
+    border-left: 3px solid var(--line);
+    padding-left: 16px;
+    color: var(--slate-600);
+  }
+
+  .rich-text hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+}

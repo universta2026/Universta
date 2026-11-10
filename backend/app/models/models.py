@@ -40,6 +40,29 @@ from sqlalchemy import Table, Column, Uuid
 class Base(DeclarativeBase):
     pass
 
+class PageBlocksMixin:
+    """Single-item content blocks of one page (Subject page or Subject + Level page).
+
+    Empty title = block not shown on the website.
+    """
+
+    about_title: Mapped[Optional[str]] = mapped_column(String(200))
+    about_body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+
+    why_title: Mapped[Optional[str]] = mapped_column(String(200))
+    why_body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+
+    ad_title: Mapped[Optional[str]] = mapped_column(String(200))
+    ad_subtitle: Mapped[Optional[str]] = mapped_column(String(200))
+    ad_body: Mapped[Optional[str]] = mapped_column(Text)
+    ad_url: Mapped[Optional[str]] = mapped_column(String(500))
+
+    cta_title: Mapped[Optional[str]] = mapped_column(String(200))
+    cta_subtitle: Mapped[Optional[str]] = mapped_column(String(200))  # button text
+    cta_body: Mapped[Optional[str]] = mapped_column(Text)
+    cta_url: Mapped[Optional[str]] = mapped_column(String(500))
+
+
 #Directus
 
 directus_users = Table(
@@ -94,7 +117,7 @@ class Country(Base):
 # SUBJECTS
 # -------------------------------------------------------------------
 
-class Subject(Base):
+class Subject(PageBlocksMixin, Base):
     __tablename__ = "subjects"
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -143,6 +166,9 @@ class Subject(Base):
     )
     popular_searches: Mapped[list["PopularSearch"]] = relationship(
         back_populates="subject"
+    )
+    sections: Mapped[list["SubjectSection"]] = relationship(
+        back_populates="subject", cascade="all, delete-orphan"
     )
 
     __table_args__ = (
@@ -232,6 +258,9 @@ class StudyLevel(Base):
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     name: Mapped[str] = mapped_column(String(150), nullable=False)
+    # Adding  these two new columns --> 11/09/2026  9:07 AM
+    entry_label: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    requirements: Mapped[Optional[list[str]]] = mapped_column(JSONB, nullable=True)
     slug: Mapped[str] = mapped_column(String(180), unique=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text)
     duration: Mapped[Optional[str]] = mapped_column(String(100))
@@ -268,7 +297,7 @@ class StudyLevel(Base):
 # Uses a single UUID PK for Directus compatibility.
 # -------------------------------------------------------------------
 
-class SubjectStudyLevel(Base):
+class SubjectStudyLevel(PageBlocksMixin, Base):
     __tablename__ = "subject_study_levels"
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -294,6 +323,84 @@ class SubjectStudyLevel(Base):
     __table_args__ = (
         UniqueConstraint(
             "subject_id", "study_level_id", name="uq_subject_study_level"
+        ),
+    )
+
+
+# -------------------------------------------------------------------
+# SUBJECT SECTIONS
+# Extra content blocks for the Subject Detail page. One row = one item
+# (one "why" block, one industry, one company, one course, ...).
+# Editors manage them from the subject screen in Directus.
+# -------------------------------------------------------------------
+
+class SubjectSection(Base):
+    __tablename__ = "subject_sections"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    subject_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("subjects.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    # Empty = shown on the subject page. Set = shown only on that study-level page
+    # of the subject (e.g. Engineering + Bachelors).
+    study_level_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("study_levels.id", ondelete="CASCADE"),
+        nullable=True,
+    )
+    # Set = shown only on that specialization's page (e.g. Civil Engineering).
+    specialization_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("specializations.id", ondelete="CASCADE"),
+        nullable=True,
+    )
+    # about | why | industry | company | advertisement | cta | course | destination | university
+    section: Mapped[str] = mapped_column(String(30), nullable=False)
+
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    subtitle: Mapped[Optional[str]] = mapped_column(String(200))
+    body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+    url: Mapped[Optional[str]] = mapped_column(String(500))
+    is_sponsored: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+
+    status: Mapped[str] = mapped_column(
+        String(30), nullable=False, default="draft", server_default="draft"
+    )
+    display_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=func.now()
+    )
+
+    subject: Mapped["Subject"] = relationship(back_populates="sections")
+
+    __table_args__ = (
+        CheckConstraint(
+            "section IN ('about', 'why', 'industry', 'company', 'advertisement', 'cta', 'course', 'destination', 'university')",
+            name="ck_subject_sections_section",
+        ),
+        CheckConstraint(
+            "status IN ('draft', 'pending_review', 'published', 'archived')",
+            name="ck_subject_sections_status",
+        ),
+        Index(
+            "ix_subject_sections_subject_section_status_order",
+            "subject_id",
+            "study_level_id",
+            "section",
+            "status",
+            "display_order",
         ),
     )
 

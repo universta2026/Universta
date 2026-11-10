@@ -50,3 +50,7 @@ node_modules
 .next
 .env.local
 next-env.d.ts
+
+requirements.txt
+
+*.tsbuildinfo
