@@ -52,3 +52,5 @@ node_modules
 next-env.d.ts
 
 requirements.txt
+
+*.tsbuildinfo
