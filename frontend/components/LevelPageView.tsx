@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ArrowRight, Briefcase, Calendar, Clock, FileCheck, GraduationCap, Landmark, Plane, Presentation, Wallet } from "lucide-react";
 import Link from "next/link";
 import RichText from "@/components/RichText";
+import { plainText } from "@/lib/plain-text";
 import type { LevelPageSections, Specialization, StudyLevel } from "@/lib/api";
 import { AdBlock, CtaBlock, SectionCards } from "./SubjectBlocks";
 import { inlineLevel, levelKindOf, type LevelKind } from "@/lib/levels";
@@ -27,7 +28,7 @@ const entryLabel: Record<LevelKind, ReactNode> = {
 function requirements(kind: LevelKind): ReactNode[] {
   const ielts = (
     <>
-      English test — IELTS <Ph>SCORE</Ph> or equivalent
+      English test - IELTS <Ph>SCORE</Ph> or equivalent
     </>
   );
   if (kind === "undergraduate" || kind === "foundation" || kind === "diploma")
@@ -36,7 +37,7 @@ function requirements(kind: LevelKind): ReactNode[] {
     return [
       "Undergraduate degree in a related subject (some programmes accept career changers)",
       <>
-        Minimum grade — usually <Ph>GRADE</Ph> or equivalent
+        Minimum grade - usually <Ph>GRADE</Ph> or equivalent
       </>,
       ielts,
       "Statement of purpose (SOP) and CV",
@@ -45,7 +46,7 @@ function requirements(kind: LevelKind): ReactNode[] {
   if (kind === "mba")
     return [
       "Undergraduate degree in any subject",
-      "Work experience — most programmes expect a few years (some accept less)",
+      "Work experience - most programmes expect a few years (some accept less)",
       "GMAT or GRE score for many programmes (some waive it)",
       ielts,
       "Essays, CV, references and often an interview",
@@ -53,7 +54,7 @@ function requirements(kind: LevelKind): ReactNode[] {
   if (kind === "pgdm")
     return [
       "Undergraduate degree in any subject",
-      "Entrance test such as CAT, XAT or GMAT — varies by institute",
+      "Entrance test such as CAT, XAT or GMAT - varies by institute",
       "Group discussion and personal interview at many institutes",
       ielts,
       "Statement of purpose and CV",
@@ -116,11 +117,18 @@ export default function LevelPageView({
         tile={<SubjectIcon name={iconKey} size="lg" />}
         title={
           <>
-            {level.name} in <span className="hl">{fieldName}</span> abroad
+            Study {level.name} in <span className="hl">{fieldName}</span> abroad
           </>
         }
-        lead={`Compare ${level.name} programmes in ${fieldName} across countries — entry requirements, costs, intakes and scholarships in one place.`}
-        actions={<SaveButton />}
+        lead={`Compare ${level.name} programmes in ${fieldName} across countries - entry requirements, costs, intakes and scholarships in one place.`}
+        actions={
+          <>
+            <SaveButton />
+            <a className="btn btn-dark" href="#advice">
+              Talk to an expert
+            </a>
+          </>
+        }
         facts={[
           { icon: Clock, label: "Duration", value: duration ?? <Ph>DURATION</Ph> },
           { icon: GraduationCap, label: "Entry", value: entryLabel[kind] },
@@ -138,7 +146,7 @@ export default function LevelPageView({
             label: "Universities",
             value: (
               <>
-                <Ph>NUMBER</Ph> / yr
+                <Ph>NUMBER</Ph>
               </>
             ),
           },
@@ -175,7 +183,7 @@ export default function LevelPageView({
                   <>
                     <p>
                       {level.name} study in {fieldName}
-                      {duration ? ` usually takes ${duration}.` : "."} {level.description ?? ""}
+                      {duration ? ` usually takes ${duration}.` : "."} {plainText(level.description)}
                     </p>
                     <p className="muted">
                       Below are programmes listed on Universta, what you need to apply, what it costs in each country and the
@@ -197,7 +205,7 @@ export default function LevelPageView({
                         </h3>
                         <ArrowRight className="ico" aria-hidden />
                       </div>
-                      {sp.description && <p className="muted small mt-2">{sp.description}</p>}
+                      {sp.description && <p className="muted small mt-2">{plainText(sp.description)}</p>}
                     </Link>
                   ))}
                 </div>
@@ -233,7 +241,7 @@ export default function LevelPageView({
                       <h3 className="card-title mt-4">
                         {l.name} in {fieldName}
                       </h3>
-                      {l.description && <p className="muted small mt-2">{l.description}</p>}
+                      {l.description && <p className="muted small mt-2">{plainText(l.description)}</p>}
                       <span className="link-arrow mt-4">
                         See {l.name} options
                         <ArrowRight className="ico" aria-hidden />
@@ -276,7 +284,7 @@ export default function LevelPageView({
               </Section>
             )}
 
-            <Section id="requirements" title="Entry requirements" intro="Typical requirements. Every university sets its own — always check the course page.">
+            <Section id="requirements" title="Entry requirements" intro="Typical requirements. Every university sets its own - always check the course page.">
               <Ticks items={requirements(kind)} />
               <div className="mt-6">
                 <Note>
@@ -305,14 +313,14 @@ export default function LevelPageView({
               </div>
             </Section>
 
-            <Section id="faq" title="Questions students ask">
+            <Section id="faq" title="Frequently asked questions">
               <Faq
                 items={[
                   {
                     q: `How long does ${lvl} study in ${fieldName} take?`,
                     a: duration
-                      ? `Usually ${duration}. Length can differ by country — in the UK many postgraduate degrees take one year; in the US and Canada they often take two.`
-                      : "Length differs by country and university — check each programme page.",
+                      ? `Usually ${duration}. Length can differ by country - in the UK many postgraduate degrees take one year; in the US and Canada they often take two.`
+                      : "Length differs by country and university - check each programme page.",
                   },
                   {
                     q: "When should I apply?",
@@ -320,7 +328,7 @@ export default function LevelPageView({
                   },
                   {
                     q: "Can I get a scholarship?",
-                    a: `Yes — government, university and private scholarships exist for ${lvl} students. Many close 6–12 months before the course starts.`,
+                    a: `Yes - government, university and private scholarships exist for ${lvl} students. Many close 6–12 months before the course starts.`,
                   },
                 ]}
               />

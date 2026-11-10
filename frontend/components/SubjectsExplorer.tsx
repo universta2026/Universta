@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import type { Subject } from "@/lib/api";
+import { plainText } from "@/lib/plain-text";
 import SubjectIcon from "./SubjectIcon";
 import { Crumbs, SecHead, withHighlight } from "./ui";
 import { LEVEL_OPTIONS } from "./site-config";
@@ -40,7 +41,7 @@ export default function SubjectsExplorer({
     return subjects.filter(
       (s) =>
         s.name.toLowerCase().includes(q) ||
-        (s.description ?? "").toLowerCase().includes(q) ||
+        plainText(s.description).toLowerCase().includes(q) ||
         s.specializations.some((sp) => sp.name.toLowerCase().includes(q)),
     );
   }, [subjects, query]);
@@ -120,7 +121,7 @@ export default function SubjectsExplorer({
                             {s.name}
                           </Link>
                         </h3>
-                        {s.description && <p className="muted small mt-2">{s.description}</p>}
+                        {s.description && <p className="muted small mt-2">{plainText(s.description)}</p>}
                         {shown.length > 0 && (
                           <div className="tags mt-4 above">
                             {shown.map((sp) => (

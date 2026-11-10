@@ -53,7 +53,7 @@ export default async function SubjectsPage() {
       content,
       "cta",
       "text",
-      "Tell us what you enjoy and where you want to go. We’ll suggest subjects and courses that fit — and explain the career paths.",
+      "Tell us what you enjoy and where you want to go. We’ll suggest subjects and courses that fit - and explain the career paths.",
     ),
   };
 
@@ -107,7 +107,7 @@ export default async function SubjectsPage() {
         </div>
       </section>
 
-      <CtaBand title={withHighlight(copy.ctaTitle)} text={copy.ctaText} lead={{ subjects: subjects.map((s) => s.name) }} />
+      <CtaBand title={withHighlight(copy.ctaTitle)} text={copy.ctaText} lead={{ subjects: subjects.map((s) => ({ name: s.name, specializations: s.specializations.map((x) => x.name) })) }} />
     </main>
   );
 }

@@ -6,6 +6,7 @@ import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
 import SubjectIcon from "@/components/SubjectIcon";
 import RichText from "@/components/RichText";
+import { plainText } from "@/lib/plain-text";
 import { AdBlock, CtaBlock, SectionCards } from "@/components/SubjectBlocks";
 import {
   AsideLead,
@@ -33,7 +34,7 @@ const shortName = (name: string) => name.replace(" & IT", "").replace(" & Manage
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const subject = await getSubject(slug);
-  return { title: subject ? `${subject.name} | Universta` : "Subject not found | Universta" };
+  return { title: subject ? `Study ${subject.name} abroad | Universta` : "Subject not found | Universta" };
 }
 
 export default async function SubjectDetailPage({ params }: Props) {
@@ -83,7 +84,7 @@ export default async function SubjectDetailPage({ params }: Props) {
       "intro",
       "Roles graduates commonly move into. Salaries vary a lot by country and experience.",
     ),
-    faqTitle: text(content, "faq", "title", "Questions students ask"),
+    faqTitle: text(content, "faq", "title", "Frequently asked questions"),
     industriesTitle: text(content, "industries", "title", "Industries and sectors"),
     industriesIntro: text(content, "industries", "intro", `Where ${short} skills are used.`),
     companiesTitle: text(content, "companies", "title", "Companies and employers"),
@@ -104,7 +105,7 @@ export default async function SubjectDetailPage({ params }: Props) {
   const courses = subject.courses ?? [];
   const universities = subject.universities ?? [];
   const destinations = subject.destinations ?? [];
-  const lead = { subjects: allSubjects.map((s) => s.name), subject: subject.name };
+  const lead = { subjects: allSubjects.map((s) => ({ name: s.name, specializations: s.specializations.map((x) => x.name) })), subject: subject.name };
 
   const tabs = [
     { id: "overview", label: copy.overviewTitle, show: true },
@@ -134,7 +135,7 @@ export default async function SubjectDetailPage({ params }: Props) {
             Study <span className="hl">{subject.name}</span> abroad
           </>
         }
-        lead={subject.description}
+        lead={plainText(subject.description) || undefined}
         actions={
           <>
             <SaveButton />
@@ -161,7 +162,7 @@ export default async function SubjectDetailPage({ params }: Props) {
                   <RichText html={about.body} />
                 ) : (
                   <>
-                    <p>{subject.description ?? `Explore studying ${subject.name} abroad.`}</p>
+                    <p>{plainText(subject.description) || `Explore studying ${subject.name} abroad.`}</p>
                     <p className="muted">
                       Studying {short} abroad gives you access to specialist teaching, industry links and a global network. Below
                       you’ll find the levels you can study, the universities that offer it, what it costs in each country, and where
@@ -182,7 +183,7 @@ export default async function SubjectDetailPage({ params }: Props) {
                         <h3 className="card-title">{sp.name}</h3>
                         <ChevronRight className="ico" aria-hidden />
                       </div>
-                      {sp.description && <p className="muted small mt-2">{sp.description}</p>}
+                      {sp.description && <p className="muted small mt-2">{plainText(sp.description)}</p>}
                     </Link>
                   ))}
                 </div>
@@ -218,7 +219,7 @@ export default async function SubjectDetailPage({ params }: Props) {
                       <h3 className="card-title mt-4">
                         {lvl.name} in {short}
                       </h3>
-                      {lvl.description && <p className="muted small mt-2">{lvl.description}</p>}
+                      {lvl.description && <p className="muted small mt-2">{plainText(lvl.description)}</p>}
                       <span className="link-arrow mt-4">
                         See {lvl.name} options
                         <ArrowRight className="ico" aria-hidden />
