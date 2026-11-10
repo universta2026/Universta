@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -26,8 +28,38 @@ def get_published_subject(db: Session, slug: str) -> Subject:
     return subject
 
 
-def build_page_sections(rows) -> schemas.LevelPageSections:
-    """Group published subject_sections rows into the blocks of a level / specialization page."""
+def owner_blocks(owner) -> dict[str, schemas.SectionItem | None]:
+    """about / why / advertisement / cta stored as columns on a Subject or SubjectStudyLevel row.
+
+    A block with an empty title is not shown. The id is derived from the owner row,
+    so it is stable between requests (the frontend uses it as a React key).
+    """
+    def block(name: str, prefix: str):
+        title = (getattr(owner, f"{prefix}_title") or "").strip()
+        if not title:
+            return None
+        return schemas.SectionItem(
+            id=uuid.uuid5(owner.id, name),
+            title=title,
+            subtitle=getattr(owner, f"{prefix}_subtitle", None),
+            body=getattr(owner, f"{prefix}_body", None),
+            url=getattr(owner, f"{prefix}_url", None),
+        )
+
+    return {
+        "about": block("about", "about"),
+        "why": block("why", "why"),
+        "advertisement": block("advertisement", "ad"),
+        "cta": block("cta", "cta"),
+    }
+
+
+def build_page_sections(rows, owner=None) -> schemas.LevelPageSections:
+    """Group published subject_sections rows into the blocks of a page.
+
+    `owner` (Subject / SubjectStudyLevel row) supplies about / why / advertisement / cta
+    from its own columns. Without it (specialization pages) they come from the rows.
+    """
     by_section: dict[str, list[schemas.SectionItem]] = {}
     for row in rows:
         by_section.setdefault(row.section, []).append(
@@ -38,13 +70,17 @@ def build_page_sections(rows) -> schemas.LevelPageSections:
         items = by_section.get(name, [])
         return items[0] if items else None
 
+    blocks = owner_blocks(owner) if owner is not None else {
+        name: first(name)
+        for name in ("about", "why", "advertisement", "cta")
+    }
     return schemas.LevelPageSections(
-        about=first("about"),
-        why=first("why"),
+        about=blocks["about"],
+        why=blocks["why"],
         industries=by_section.get("industry", []),
         companies=by_section.get("company", []),
-        advertisement=first("advertisement"),
-        cta=first("cta"),
+        advertisement=blocks["advertisement"],
+        cta=blocks["cta"],
         courses=by_section.get("course", []),
         destinations=by_section.get("destination", []),
         universities=by_section.get("university", []),
@@ -125,7 +161,7 @@ def get_subject(slug: str, db: Session = Depends(get_db)):
         by_section.setdefault(row.section, []).append(
             schemas.SectionItem.model_validate(row)
         )
-    why_items = by_section.get("why", [])
+    blocks = owner_blocks(subject)
 
     return schemas.SubjectDetail(
         **schemas.SubjectOut.model_validate(subject).model_dump(),
@@ -133,8 +169,10 @@ def get_subject(slug: str, db: Session = Depends(get_db)):
             schemas.SpecializationOut.model_validate(s) for s in specializations
         ],
         study_levels=[schemas.StudyLevelOut.model_validate(s) for s in study_levels],
-        # If an editor publishes several "why" rows, only the first one is used.
-        why=why_items[0] if why_items else None,
+        about=blocks["about"],
+        why=blocks["why"],
+        advertisement=blocks["advertisement"],
+        cta=blocks["cta"],
         industries=by_section.get("industry", []),
         companies=by_section.get("company", []),
         courses=by_section.get("course", []),
@@ -157,6 +195,12 @@ def get_subject_level_sections(slug: str, level_slug: str, db: Session = Depends
     level = db.scalar(select(StudyLevel).where(StudyLevel.slug == level_slug))
     if level is None:
         return schemas.LevelPageSections()
+    link = db.scalar(
+        select(SubjectStudyLevel).where(
+            SubjectStudyLevel.subject_id == subject.id,
+            SubjectStudyLevel.study_level_id == level.id,
+        )
+    )
 
     rows = db.scalars(
         select(SubjectSection)
@@ -168,7 +212,7 @@ def get_subject_level_sections(slug: str, level_slug: str, db: Session = Depends
         )
         .order_by(SubjectSection.display_order, SubjectSection.title)
     ).all()
-    return build_page_sections(rows)
+    return build_page_sections(rows, owner=link)
 
 
 @router.get(

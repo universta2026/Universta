@@ -40,6 +40,29 @@ from sqlalchemy import Table, Column, Uuid
 class Base(DeclarativeBase):
     pass
 
+class PageBlocksMixin:
+    """Single-item content blocks of one page (Subject page or Subject + Level page).
+
+    Empty title = block not shown on the website.
+    """
+
+    about_title: Mapped[Optional[str]] = mapped_column(String(200))
+    about_body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+
+    why_title: Mapped[Optional[str]] = mapped_column(String(200))
+    why_body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+
+    ad_title: Mapped[Optional[str]] = mapped_column(String(200))
+    ad_subtitle: Mapped[Optional[str]] = mapped_column(String(200))
+    ad_body: Mapped[Optional[str]] = mapped_column(Text)
+    ad_url: Mapped[Optional[str]] = mapped_column(String(500))
+
+    cta_title: Mapped[Optional[str]] = mapped_column(String(200))
+    cta_subtitle: Mapped[Optional[str]] = mapped_column(String(200))  # button text
+    cta_body: Mapped[Optional[str]] = mapped_column(Text)
+    cta_url: Mapped[Optional[str]] = mapped_column(String(500))
+
+
 #Directus
 
 directus_users = Table(
@@ -94,7 +117,7 @@ class Country(Base):
 # SUBJECTS
 # -------------------------------------------------------------------
 
-class Subject(Base):
+class Subject(PageBlocksMixin, Base):
     __tablename__ = "subjects"
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -274,7 +297,7 @@ class StudyLevel(Base):
 # Uses a single UUID PK for Directus compatibility.
 # -------------------------------------------------------------------
 
-class SubjectStudyLevel(Base):
+class SubjectStudyLevel(PageBlocksMixin, Base):
     __tablename__ = "subject_study_levels"
 
     id: Mapped[uuid.UUID] = mapped_column(

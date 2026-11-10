@@ -87,7 +87,10 @@ class SectionItem(ORMModel):
 class SubjectDetail(SubjectOut):
     specializations: list[SpecializationOut]
     study_levels: list[StudyLevelOut]
+    about: SectionItem | None = None
     why: SectionItem | None = None
+    advertisement: SectionItem | None = None
+    cta: SectionItem | None = None
     industries: list[SectionItem] = Field(default_factory=list)
     companies: list[SectionItem] = Field(default_factory=list)
     courses: list[SectionItem] = Field(default_factory=list)

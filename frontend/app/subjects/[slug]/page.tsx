@@ -6,7 +6,7 @@ import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
 import SubjectIcon from "@/components/SubjectIcon";
 import RichText from "@/components/RichText";
-import { SectionCards } from "@/components/SubjectBlocks";
+import { AdBlock, CtaBlock, SectionCards } from "@/components/SubjectBlocks";
 import {
   AsideLead,
   CareersTable,
@@ -95,7 +95,10 @@ export default async function SubjectDetailPage({ params }: Props) {
   const levels = getLevels(subject.study_levels); // Undergraduate / Postgraduate naming + MBA and PGDM
   const hasSpecs = subject.specializations.length > 0;
   const hasLevels = levels.length > 0;
+  const about = subject.about?.body ? subject.about : null;
   const why = subject.why?.body ? subject.why : null;
+  const ad = subject.advertisement ?? null;
+  const cta = subject.cta ?? null;
   const industries = subject.industries ?? [];
   const companies = subject.companies ?? [];
   const courses = subject.courses ?? [];
@@ -152,14 +155,20 @@ export default async function SubjectDetailPage({ params }: Props) {
       <DetailLayout
         main={
           <>
-            <Section id="overview" title={copy.overviewTitle}>
+            <Section id="overview" title={about?.title ?? copy.overviewTitle}>
               <div className="body-copy">
-                <p>{subject.description ?? `Explore studying ${subject.name} abroad.`}</p>
-                <p className="muted">
-                  Studying {short} abroad gives you access to specialist teaching, industry links and a global network. Below
-                  you’ll find the levels you can study, the universities that offer it, what it costs in each country, and where
-                  it can take your career.
-                </p>
+                {about ? (
+                  <RichText html={about.body} />
+                ) : (
+                  <>
+                    <p>{subject.description ?? `Explore studying ${subject.name} abroad.`}</p>
+                    <p className="muted">
+                      Studying {short} abroad gives you access to specialist teaching, industry links and a global network. Below
+                      you’ll find the levels you can study, the universities that offer it, what it costs in each country, and where
+                      it can take your career.
+                    </p>
+                  </>
+                )}
               </div>
               <StatCards />
             </Section>
@@ -219,6 +228,9 @@ export default async function SubjectDetailPage({ params }: Props) {
                 </div>
               </Section>
             )}
+
+            {ad && <AdBlock item={ad} />}
+            {cta && <CtaBlock item={cta} />}
 
             {courses.length > 0 && (
               <Section id="courses" title={copy.coursesTitle} intro={copy.coursesIntro}>

@@ -76,7 +76,10 @@ export type SubjectDetail = Omit<Subject, "specializations"> & {
   specializations: Specialization[];
   study_levels: StudyLevel[];
   // Optional in the type so the page still works if the API is an older version.
+  about?: SectionItem | null;
   why?: SectionItem | null;
+  advertisement?: SectionItem | null;
+  cta?: SectionItem | null;
   industries?: SectionItem[];
   companies?: SectionItem[];
   courses?: SectionItem[];
