@@ -1279,6 +1279,15 @@
     border-bottom: 1px solid var(--line);
   }
 
+  /* Any standalone block (ad, CTA, banner...) placed between sections gets the same rhythm */
+  .detail-main>*:not(section) {
+    margin-bottom: 48px;
+  }
+
+  .detail-main>*:not(section):last-child {
+    margin-bottom: 0;
+  }
+
   .detail-main>section:last-child {
     border-bottom: 0;
     margin-bottom: 0;

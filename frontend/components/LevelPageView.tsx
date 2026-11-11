@@ -175,7 +175,7 @@ export default function LevelPageView({
       <DetailLayout
         main={
           <>
-            <Section id="overview" title={about?.title ?? "Overview"}>
+            <Section id="overview" title={`About study ${level.name} in ${fieldName}`}>
               <div className="body-copy">
                 {about ? (
                   <RichText html={about.body} />
@@ -213,7 +213,7 @@ export default function LevelPageView({
             )}
 
             {why && (
-              <Section id="why" title={why.title}>
+              <Section id="why" title={`Why study ${level.name} in ${fieldName}`}>
                 <div className="body-copy">
                   <RichText html={why.body} />
                 </div>
