@@ -161,3 +161,27 @@ export async function getSpecializationLevelSections(
     return {};
   }
 }
+
+// ---------- Countries (home country + destinations on the international-student pages) ----------
+
+export type Country = {
+  id: string;
+  name: string;
+  slug: string;
+  country_code: string | null;
+  description: string | null;
+  // Backend column on the countries table. Optional so the frontend works before it is merged:
+  // missing or false = not popular. Rename here if the backend names it differently.
+  is_popular?: boolean;
+};
+
+// Never throws: if the API is down the page shows its empty state.
+export async function getCountries(): Promise<Country[]> {
+  try {
+    const res = await get("/countries");
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
