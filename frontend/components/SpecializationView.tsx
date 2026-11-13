@@ -6,6 +6,7 @@ import { plainText } from "@/lib/plain-text";
 import type { LevelPageSections, Specialization, StudyLevel, SubjectDetail } from "@/lib/api";
 import type { LeadContext } from "./LeadForm";
 import { AdBlock, CtaBlock, SectionCards } from "./SubjectBlocks";
+import HomeCountryBlock from "./HomeCountryBlock";
 import SaveButton from "./SaveButton";
 import SubNav from "./SubNav";
 import SubjectIcon from "./SubjectIcon";
@@ -229,7 +230,12 @@ export default function SpecializationView({
             </Section>
           </>
         }
-        aside={<AsideLead about={spec.name} lead={lead} />}
+        aside={
+          <>
+            <HomeCountryBlock field={spec.name} subject={subject.slug} spec={spec.slug} />
+            <AsideLead about={spec.name} lead={lead} />
+          </>
+        }
       />
 
       <NextStepsBand

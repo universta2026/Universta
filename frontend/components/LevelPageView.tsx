@@ -9,6 +9,7 @@ import type { LevelPageSections, Specialization, StudyLevel } from "@/lib/api";
 import { AdBlock, CtaBlock, SectionCards } from "./SubjectBlocks";
 import { inlineLevel, levelKindOf, type LevelKind } from "@/lib/levels";
 import type { LeadContext } from "./LeadForm";
+import HomeCountryBlock from "./HomeCountryBlock";
 import SaveButton from "./SaveButton";
 import SubjectIcon from "./SubjectIcon";
 import SubNav from "./SubNav";
@@ -335,7 +336,12 @@ export default function LevelPageView({
             </Section>
           </>
         }
-        aside={<AsideLead about={`${level.name} in ${fieldName}`} lead={lead} />}
+        aside={
+          <>
+            {subjectSlug && <HomeCountryBlock field={fieldName} subject={subjectSlug} spec={specSlug} level={level.slug} />}
+            <AsideLead about={`${level.name} in ${fieldName}`} lead={lead} />
+          </>
+        }
       />
       <NextStepsBand
         items={[

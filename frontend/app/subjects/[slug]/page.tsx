@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, BookOpen, ChevronRight, FileCheck, Globe, Landmark, Layers, MessageCircle, GraduationCap, Award } from "lucide-react";
+import HomeCountryBlock from "@/components/HomeCountryBlock";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
 import SubjectIcon from "@/components/SubjectIcon";
@@ -270,7 +271,12 @@ export default async function SubjectDetailPage({ params }: Props) {
             </Section>
           </>
         }
-        aside={<AsideLead about={short} lead={lead} />}
+        aside={
+          <>
+            <HomeCountryBlock field={short} subject={subject.slug} />
+            <AsideLead about={short} lead={lead} />
+          </>
+        }
       />
 
       <NextStepsBand
