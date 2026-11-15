@@ -23,6 +23,12 @@
     margin-top: 4px;
   }
 
+  /* Editor H1 is shown as h2, H2 as h3 ... H5 as h6 (see RichText.tsx). */
+  .rich-text h2 {
+    font: 700 22px/30px var(--font-head);
+    color: var(--ink);
+  }
+
   .rich-text h3 {
     font: 700 18px/25px var(--font-head);
     color: var(--ink);
@@ -30,6 +36,16 @@
 
   .rich-text h4 {
     font: 700 16px/22px var(--font-head);
+    color: var(--ink);
+  }
+
+  .rich-text h5 {
+    font: 700 15px/21px var(--font-head);
+    color: var(--ink);
+  }
+
+  .rich-text h6 {
+    font: 700 14px/20px var(--font-head);
     color: var(--ink);
   }
 
