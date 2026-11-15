@@ -23,6 +23,7 @@ class CountryOut(ORMModel):
     slug: str
     country_code: str | None = None
     description: str | None = None
+    is_popular: bool = False
 
 
 class SpecializationOut(ORMModel):

@@ -109,12 +109,14 @@ export default async function InternationalStudentPage({ params }: Props) {
               focus={subject.name}
               countries={countries.map((c) => ({ name: c.name, slug: c.slug }))}
             />
-            {/* The heading always shows; the cards appear once countries are flagged popular in the backend. */}
-            <div className="mt-8">
-              <Section id="popular" title={copy.popularTitle}>
-                {popular.length > 0 && <PopularCountries countries={popular} />}
-              </Section>
-            </div>
+            {/* The whole section is hidden until at least one country is flagged popular in the backend. */}
+            {popular.length > 0 && (
+              <div className="mt-8">
+                <Section id="popular" title={copy.popularTitle}>
+                  <PopularCountries countries={popular} />
+                </Section>
+              </div>
+            )}
 
             <div className="mt-8">
               <Section id="countries" title={copy.allTitle} intro={copy.allIntro}>
