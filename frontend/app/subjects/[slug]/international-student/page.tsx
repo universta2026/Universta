@@ -46,10 +46,10 @@ export default async function InternationalStudentPage({ params }: Props) {
   // Countries flagged popular in the countries table (is_popular). Hidden while none are flagged.
   const popular = countries
     .filter((c) => c.is_popular)
-    .map((c) => ({ name: c.name, slug: c.slug, href: internationalHref({ subject: subject.slug, from: c.slug }) }));
+    .map((c) => ({ name: c.name, slug: c.slug, code: c.country_code, href: internationalHref({ subject: subject.slug, from: c.slug }) }));
   const continents = groupByContinent(countries).map((g) => ({
     name: g.name,
-    countries: g.countries.map((c) => ({ name: c.name, slug: c.slug, href: internationalHref({ subject: subject.slug, from: c.slug }) })),
+    countries: g.countries.map((c) => ({ name: c.name, slug: c.slug, code: c.country_code, href: internationalHref({ subject: subject.slug, from: c.slug }) })),
   }));
   // CTA and advertisement use the same blocks as the other pages (CtaBlock / AdBlock). This page has no
   // subject_sections rows, so they are built from the editable `landing` text (keys: cta_title, cta_body,
@@ -82,7 +82,7 @@ export default async function InternationalStudentPage({ params }: Props) {
           { label: subject.name, href: `/subjects/${subject.slug}` },
           { label: "International students" },
         ]}
-        tile={<SubjectIcon name={subject.icon_key} size="lg" />}
+        tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}
         title={withHighlight(copy.title)}
         lead={copy.intro}
         actions={

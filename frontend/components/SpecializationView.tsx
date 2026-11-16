@@ -62,7 +62,7 @@ export default function SpecializationView({
           { label: subject.name, href: `/subjects/${subject.slug}` },
           { label: spec.name },
         ]}
-        tile={<SubjectIcon name={subject.icon_key} size="lg" />}
+        tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}
         title={
           <>
             Study <span className="hl">{spec.name}</span> abroad

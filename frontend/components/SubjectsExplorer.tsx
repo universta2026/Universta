@@ -114,7 +114,7 @@ export default function SubjectsExplorer({
                 return (
                   <div className="card" key={s.id}>
                     <div className="row" style={{ alignItems: "flex-start", gap: 16 }}>
-                      <SubjectIcon name={s.icon_key} />
+                      <SubjectIcon name={s.icon_key} slug={s.slug} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <h3 className="card-title">
                           <Link className="stretched" href={`/subjects/${s.slug}`} style={{ color: "inherit" }}>
