@@ -50,7 +50,7 @@ export default async function InternationalStudentsCountryPage({ params, searchP
   const destinations = countries.filter((c) => c.slug !== home.slug);
   const continents = groupByContinent(destinations).map((g) => ({
     name: g.name,
-    countries: g.countries.map((c) => ({ name: c.name, slug: c.slug })),
+    countries: g.countries.map((c) => ({ name: c.name, slug: c.slug, code: c.country_code })),
   }));
 
   // The subject being viewed comes first, then the rest A-Z.
@@ -72,7 +72,7 @@ export default async function InternationalStudentsCountryPage({ params, searchP
           { label: "International students", href: internationalHref({ subject: subject.slug }) },
           { label: home.name },
         ]}
-        tile={<SubjectIcon name={subject.icon_key} size="lg" />}
+        tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}
         title={withHighlight(fill(text(content, "country", "title", "Study {focus} abroad from {country}"), { ...v, focus: `{${v.focus}}` }))}
         lead={t("country", "intro", "Everything open to a student from {country}: where you can study {focus}, and which other fields you can apply for.")}
         actions={

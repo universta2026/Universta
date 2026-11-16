@@ -108,14 +108,13 @@ export default function LevelPageView({
   const ad = sections.advertisement ?? null;
   const cta = sections.cta ?? null;
   const hasSpecs = !!subjectSlug && specializations.length > 0;
-  const otherLevels = specSlug ? allLevels.filter((l) => l.slug !== level.slug) : [];
   const hasProgrammes = courses.length > 0 || universities.length > 0;
 
   return (
     <main>
       <DetailHero
         crumbs={crumbs}
-        tile={<SubjectIcon name={iconKey} size="lg" />}
+        tile={<SubjectIcon name={iconKey} slug={subjectSlug} size="lg" />}
         title={
           <>
             Study {level.name} in <span className="hl">{fieldName}</span> abroad
@@ -161,7 +160,6 @@ export default function LevelPageView({
           { id: "why", label: "Why this level", show: !!why },
           { id: "industries", label: "Industries", show: industries.length > 0 },
           { id: "companies", label: "Companies", show: companies.length > 0 },
-          { id: "levels", label: "Other levels", show: otherLevels.length > 0 },
           { id: "courses", label: "Courses", show: courses.length > 0 },
           { id: "destinations", label: "Where to study", show: destinations.length > 0 },
           { id: "universities", label: "Universities", show: universities.length > 0 },
@@ -230,26 +228,6 @@ export default function LevelPageView({
             {companies.length > 0 && (
               <Section id="companies" title={`Popular companies for ${lvl} in ${fieldName}`}>
                 <SectionCards items={companies} />
-              </Section>
-            )}
-
-            {otherLevels.length > 0 && (
-              <Section id="levels" title={`Other levels to study ${fieldName}`} intro="Compare this with the other study levels.">
-                <div className="grid g-3">
-                  {otherLevels.map((l) => (
-                    <Link className="card" href={`/subjects/${subjectSlug}/${specSlug}/${l.slug}`} key={l.id}>
-                      {l.duration && <span className="tag">{l.duration}</span>}
-                      <h3 className="card-title mt-4">
-                        {l.name} in {fieldName}
-                      </h3>
-                      {l.description && <p className="muted small mt-2">{plainText(l.description)}</p>}
-                      <span className="link-arrow mt-4">
-                        See {l.name} options
-                        <ArrowRight className="ico" aria-hidden />
-                      </span>
-                    </Link>
-                  ))}
-                </div>
               </Section>
             )}
 

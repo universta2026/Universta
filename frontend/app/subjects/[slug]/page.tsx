@@ -130,7 +130,7 @@ export default async function SubjectDetailPage({ params }: Props) {
           { label: "Subjects", href: "/subjects" },
           { label: subject.name },
         ]}
-        tile={<SubjectIcon name={subject.icon_key} size="lg" />}
+        tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}
         title={
           <>
             Study <span className="hl">{subject.name}</span> abroad

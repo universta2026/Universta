@@ -40,7 +40,7 @@ export default async function InternationalStudentIndexPage() {
             <div className="grid g-3">
               {subjects.map((s) => (
                 <div className="card" key={s.id}>
-                  <SubjectIcon name={s.icon_key} />
+                  <SubjectIcon name={s.icon_key} slug={s.slug} />
                   <h3 className="card-title mt-4">
                     <Link className="stretched" href={internationalHref({ subject: s.slug })} style={{ color: "inherit" }}>
                       {s.name}

@@ -1268,7 +1268,7 @@
   .detail {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 48px;
+    gap: 80px;
     padding: 48px 0 80px;
     align-items: start;
   }
@@ -2093,27 +2093,29 @@
   /* Sidebar form: no inner scrollbar. Sticky on tall screens, scrolls with the page on short ones. */
   /* Sidebar form: no inner scrollbar, always sticky. Compact sizing so the whole form fits on laptop screens. */
   .detail-aside .aside-cta {
-    padding: 20px;
+    padding: 24px;
+    padding-top: 16px;
   }
 
   .detail-aside .aside-cta h3 {
+    margin-top: 0;
     font-size: 19px;
     line-height: 25px;
   }
 
   .detail-aside .aside-cta p.small {
-    margin-top: 6px;
+    margin-top: 8px;
     font-size: 13px;
     line-height: 18px;
   }
 
   .detail-aside .lead-form {
-    gap: 8px;
-    margin-top: 12px;
+    gap: 14.75px;
+    margin-top: 18.75px;
   }
 
   .detail-aside .lead-form .field {
-    gap: 4px;
+    gap: 6.75px;
   }
 
   .detail-aside .lead-form .field label {
@@ -2123,11 +2125,12 @@
 
   .detail-aside .lead-form .input,
   .detail-aside .lead-form .select {
-    height: 40px;
+    height: 42px;
   }
 
   .detail-aside .lead-form .btn {
-    height: 44px;
+    height: 46px;
+    margin-top: 4px;
   }
 
   .detail-aside .lead-form .caption {

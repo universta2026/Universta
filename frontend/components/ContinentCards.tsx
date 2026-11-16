@@ -7,7 +7,7 @@ import { fill } from "@/lib/eligibility";
 
 export type ContinentCard = {
   name: string;
-  countries: { name: string; slug: string; href?: string }[]; // href set = the row is a link
+  countries: { name: string; slug: string; code?: string | null; href?: string }[]; // href set = the row is a link
 };
 
 export const ROW_STYLE: React.CSSProperties = {
@@ -20,11 +20,31 @@ export const ROW_STYLE: React.CSSProperties = {
   color: "inherit",
 };
 
-export function CountryRow({ name, arrow }: { name: string; arrow?: boolean }) {
+// Flag SVGs live in public/flags/svg/<2-letter code>.svg. Hidden when the country has no code.
+function Flag({ code }: { code?: string | null }) {
+  const c = code?.trim().toLowerCase();
+  if (!c || c.length !== 2) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`/flags/svg/${c}.svg`}
+      alt=""
+      width={28}
+      height={20}
+      loading="lazy"
+      style={{ width: 28, height: 20, objectFit: "cover", borderRadius: 3, flexShrink: 0, boxShadow: "0 0 0 1px rgba(0,0,0,.12)" }}
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+      }}
+    />
+  );
+}
+
+export function CountryRow({ name, code, arrow }: { name: string; code?: string | null; arrow?: boolean }) {
   return (
     <>
       <span className="row" style={{ gap: 12, minWidth: 0 }}>
-        {/* flag goes here, e.g. <span style={{ fontSize: 22, lineHeight: 1 }}>🇮🇳</span> */}
+        <Flag code={code} />
         <span style={{ fontWeight: 600, overflowWrap: "anywhere" }}>{name}</span>
       </span>
       {arrow && <ArrowRight className="ico" aria-hidden style={{ flexShrink: 0 }} />}
@@ -41,7 +61,10 @@ export default function ContinentCards({
   continents: ContinentCard[];
   panelTitle: string;
 }) {
-  const [open, setOpen] = useState<string | null>(null);
+  // Europe is open by default; opening another continent closes it (one open at a time).
+  const [open, setOpen] = useState<string | null>(
+    () => continents.find((c) => c.name.trim().toLowerCase() === "europe")?.name ?? null,
+  );
   const active = continents.find((c) => c.name === open);
 
   return (
@@ -100,11 +123,11 @@ export default function ContinentCards({
               <li key={k.slug} style={{ minWidth: 0 }}>
                 {k.href ? (
                   <Link className="card card-flat" href={k.href} style={ROW_STYLE}>
-                    <CountryRow name={k.name} arrow />
+                    <CountryRow name={k.name} code={k.code} arrow />
                   </Link>
                 ) : (
                   <div className="card card-flat" style={ROW_STYLE}>
-                    <CountryRow name={k.name} />
+                    <CountryRow name={k.name} code={k.code} />
                   </div>
                 )}
               </li>
