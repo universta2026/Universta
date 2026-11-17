@@ -87,6 +87,18 @@
     color: var(--ink);
     font: 400 16px/26px var(--font-body);
     -webkit-font-smoothing: antialiased;
+    cursor: default; /* no text I-beam over page copy */
+  }
+
+  a,
+  a *,
+  summary {
+    cursor: pointer;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),
+  textarea {
+    cursor: text;
   }
 
   img {

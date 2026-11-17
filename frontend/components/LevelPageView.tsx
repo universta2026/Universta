@@ -200,7 +200,7 @@ export default function LevelPageView({
                     <Link className="card" href={`/subjects/${subjectSlug}/${sp.slug}/${level.slug}`} key={sp.id}>
                       <div className="row between">
                         <h3 className="card-title">
-                          {sp.name} <span className="muted">· {level.name}</span>
+                          {sp.name}
                         </h3>
                         <ArrowRight className="ico" aria-hidden />
                       </div>
