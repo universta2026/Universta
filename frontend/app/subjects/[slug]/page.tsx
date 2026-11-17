@@ -256,7 +256,17 @@ export default async function SubjectDetailPage({ params }: Props) {
             <Section id="destinations" title={copy.destTitle} intro={copy.destIntro}>
               {destinations.length > 0 && (
                 <div style={{ marginBottom: 24 }}>
-                  <SectionCards items={destinations} linkLabel="Learn more" />
+                  {/* Country name only; link to each country page once those pages exist. */}
+                  <div className="grid g-3">
+                    {destinations.map((d) => (
+                      <div className="card" key={d.id}>
+                        <div className="row between">
+                          <h3 className="card-title">{d.title}</h3>
+                          <ArrowRight className="ico" aria-hidden />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               <CostTable lastCol="post-study" />
