@@ -110,6 +110,20 @@ class Country(Base):
         back_populates="country", cascade="all, delete-orphan"
     )
 
+    # Single-text blocks of the Study Abroad page. Empty title = block not shown.
+    # (Multi-item blocks: subjects, courses, universities, exams, scholarships, intakes
+    #  live in country_sections.)
+    why_title: Mapped[Optional[str]] = mapped_column(String(200))
+    why_body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+    visa_title: Mapped[Optional[str]] = mapped_column(String(200))
+    visa_body: Mapped[Optional[str]] = mapped_column(Text)
+    application_title: Mapped[Optional[str]] = mapped_column(String(200))
+    application_body: Mapped[Optional[str]] = mapped_column(Text)
+    cost_title: Mapped[Optional[str]] = mapped_column(String(200))
+    cost_body: Mapped[Optional[str]] = mapped_column(Text)
+    eligibility_title: Mapped[Optional[str]] = mapped_column(String(200))
+    eligibility_body: Mapped[Optional[str]] = mapped_column(Text)
+
     __table_args__ = (
         CheckConstraint(
             "status IN ('draft', 'pending_review', 'published', 'archived')",

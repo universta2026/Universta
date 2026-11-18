@@ -66,7 +66,7 @@ VALUES
  'Optional short line, e.g. the city of a university or a fee range.', false),
 
 ('country_sections', 'body', NULL, 'input-rich-text-html',
- '{"toolbar":["bold","italic","underline","h2","h3","bullist","numlist","link"]}'::json,
+ '{"toolbar":["undo","redo","bold","italic","underline","strikethrough","h1","h2","h3","h4","h5","h6","numlist","bullist","blockquote","hr","customLink","unlink","removeformat","cut","copy","paste","fullscreen"]}'::json,
  NULL, NULL, false, false, 6, 'full',
  'Description text. For text blocks (visa, eligibility...) write the whole text here.', false),
 
