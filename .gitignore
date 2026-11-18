@@ -54,3 +54,6 @@ next-env.d.ts
 requirements.txt
 
 *.tsbuildinfo
+
+# generated URL list / sitemap export
+sitemap-export/

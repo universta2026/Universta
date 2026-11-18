@@ -70,7 +70,7 @@ export default async function InternationalCountryView({ slug, country, spec: sp
           { label: "Home", href: "/" },
           { label: "Subjects", href: "/subjects" },
           { label: subject.name, href: `/subjects/${subject.slug}` },
-          { label: "International students", href: internationalHref({ subject: subject.slug }) },
+          { label: "International students", href: internationalHref({ subject: subject.slug, spec: spec?.slug, level: level?.slug }) },
           { label: home.name },
         ]}
         tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}

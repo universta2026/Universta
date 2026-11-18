@@ -242,7 +242,7 @@ export default function SpecializationView({
         items={[
           { icon: Award, title: "Scholarships", desc: `Funding for ${spec.name} students`, key: "scholarships" },
           { icon: FileCheck, title: "Pick your test", desc: "IELTS, TOEFL, PTE, GRE", key: "exams" },
-          { icon: Globe, title: "Compare countries", desc: "Costs, intakes, work rights", key: "destinations" },
+          { icon: Globe, title: "Compare countries", desc: "Costs, intakes, work rights", key: "study-abroad" },
           { icon: MessageCircle, title: "Find a consultant", desc: "Verified, reviewed advisers", key: "consultants" },
         ]}
       />
