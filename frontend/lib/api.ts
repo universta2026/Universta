@@ -40,6 +40,19 @@ export async function getPageContent(pageKey: string): Promise<PageSections> {
   return data.sections as PageSections;
 }
 
+// Text of the /studyabroad pages. Shared defaults live in page_key = "study-abroad"; a country or a
+// continent can override any single value with rows under page_key = "study-abroad:{slug}"
+// (e.g. "study-abroad:germany", "study-abroad:europe"). Both are editable in Directus.
+export async function getStudyAbroadContent(itemSlug?: string): Promise<PageSections> {
+  const [base, own] = await Promise.all([
+    getPageContent("study-abroad"),
+    itemSlug ? getPageContent(`study-abroad:${itemSlug}`) : Promise.resolve({} as PageSections),
+  ]);
+  const merged: PageSections = { ...base };
+  for (const [section, values] of Object.entries(own)) merged[section] = { ...base[section], ...values };
+  return merged;
+}
+
 // Read one text value from page content, or use the fallback if it is missing.
 export function text(
   sections: PageSections,
@@ -174,6 +187,32 @@ export type Country = {
   // missing or false = not popular. Rename here if the backend names it differently.
   is_popular?: boolean;
 };
+
+// Content blocks of /studyabroad/<country> (rows of country_sections in Directus). Same item shape as the subject pages.
+export type CountrySections = {
+  why: SectionItem[];
+  subjects: SectionItem[];
+  courses: SectionItem[];
+  universities: SectionItem[];
+  exams: SectionItem[];
+  scholarships: SectionItem[];
+  visa: SectionItem[];
+  applications: SectionItem[];
+  intakes: SectionItem[];
+  costs: SectionItem[];
+  eligibility: SectionItem[];
+};
+
+// Never throws: if the API is down or older, the country page just shows the blocks it has.
+export async function getCountrySections(slug: string): Promise<Partial<CountrySections>> {
+  try {
+    const res = await get(`/countries/${encodeURIComponent(slug)}/sections`);
+    if (!res.ok) return {};
+    return await res.json();
+  } catch {
+    return {};
+  }
+}
 
 // Never throws: if the API is down the page shows its empty state.
 export async function getCountries(): Promise<Country[]> {

@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.models.models import Country
+from app.models.models import Country, CountrySection
 from app.schemas import schemas
 
 router = APIRouter(tags=["countries"])
@@ -26,3 +26,45 @@ def get_country(slug: str, db: Session = Depends(get_db)):
     if country is None:
         raise HTTPException(status_code=404, detail="Country not found")
     return country
+
+
+# country_sections.section value -> field name in the response
+SECTION_FIELDS = {
+    "why": "why",
+    "subject": "subjects",
+    "course": "courses",
+    "university": "universities",
+    "exam": "exams",
+    "scholarship": "scholarships",
+    "visa": "visa",
+    "application": "applications",
+    "intake": "intakes",
+    "cost": "costs",
+    "eligibility": "eligibility",
+}
+
+
+@router.get("/countries/{slug}/sections", response_model=schemas.CountrySections)
+def get_country_sections(slug: str, db: Session = Depends(get_db)):
+    """Published content blocks of /studyabroad/<slug>, e.g. {"universities": [...], "visa": [...]}."""
+    country = db.scalar(
+        select(Country).where(Country.slug == slug, Country.status == "published")
+    )
+    if country is None:
+        raise HTTPException(status_code=404, detail="Country not found")
+
+    rows = db.scalars(
+        select(CountrySection)
+        .where(
+            CountrySection.country_id == country.id,
+            CountrySection.status == "published",
+        )
+        .order_by(CountrySection.display_order, CountrySection.title)
+    ).all()
+
+    grouped: dict[str, list[schemas.SectionItem]] = {}
+    for row in rows:
+        grouped.setdefault(SECTION_FIELDS[row.section], []).append(
+            schemas.SectionItem.model_validate(row)
+        )
+    return schemas.CountrySections(**grouped)

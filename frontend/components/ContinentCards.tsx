@@ -7,6 +7,8 @@ import { fill } from "@/lib/eligibility";
 
 export type ContinentCard = {
   name: string;
+  href?: string; // set = the open panel also shows a link to the continent page
+  linkLabel?: string; // text of that link (editable in page_content), e.g. "View all in Europe"
   countries: { name: string; slug: string; code?: string | null; href?: string }[]; // href set = the row is a link
 };
 
@@ -21,7 +23,7 @@ export const ROW_STYLE: React.CSSProperties = {
 };
 
 // Flag SVGs live in public/flags/svg/<2-letter code>.svg. Hidden when the country has no code.
-function Flag({ code }: { code?: string | null }) {
+export function Flag({ code }: { code?: string | null }) {
   const c = code?.trim().toLowerCase();
   if (!c || c.length !== 2) return null;
   return (
@@ -133,6 +135,12 @@ export default function ContinentCards({
               </li>
             ))}
           </ul>
+          {active.href && (
+            <Link className="link-arrow mt-6" href={active.href}>
+              {fill(active.linkLabel ?? "View all in {continent}", { continent: active.name })}
+              <ArrowRight className="ico" aria-hidden />
+            </Link>
+          )}
         </div>
       )}
     </div>
