@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -44,6 +46,10 @@ SECTION_FIELDS = {
 }
 
 
+# Blocks edited as fields on the country itself (title + body)
+COLUMN_BLOCKS = ("why", "visa", "application", "cost", "eligibility")
+
+
 @router.get("/countries/{slug}/sections", response_model=schemas.CountrySections)
 def get_country_sections(slug: str, db: Session = Depends(get_db)):
     """Published content blocks of /studyabroad/<slug>, e.g. {"universities": [...], "visa": [...]}."""
@@ -63,6 +69,18 @@ def get_country_sections(slug: str, db: Session = Depends(get_db)):
     ).all()
 
     grouped: dict[str, list[schemas.SectionItem]] = {}
+
+    # Text blocks stored as columns on the country (first in their list).
+    for section in COLUMN_BLOCKS:
+        title = (getattr(country, f"{section}_title") or "").strip()
+        if title:
+            grouped[SECTION_FIELDS[section]] = [
+                schemas.SectionItem(
+                    id=uuid.uuid5(country.id, section),
+                    title=title,
+                    body=getattr(country, f"{section}_body"),
+                )
+            ]
     for row in rows:
         grouped.setdefault(SECTION_FIELDS[row.section], []).append(
             schemas.SectionItem.model_validate(row)
