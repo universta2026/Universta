@@ -28,7 +28,7 @@ export type NavItem = {
 
 export const NAV: NavItem[] = [
   { key: "subjects", name: "Subjects", long: "Subjects & specializations", href: "/subjects", icon: BookOpen, desc: "Find the field that fits you - from AI and nursing to architecture.", live: true },
-  { key: "destinations", name: "Destinations", long: "Study destinations", href: "/destinations", icon: Globe, desc: "Compare countries by cost, intakes, work rights and lifestyle.", live: false },
+  { key: "study-abroad", name: "Study abroad", long: "Study abroad", href: "/studyabroad", icon: Globe, desc: "Compare countries by cost, intakes, work rights and lifestyle.", live: true },
   { key: "universities", name: "Universities", long: "Universities", href: "/universities", icon: Landmark, desc: "Profiles, fees, entry requirements and student life.", live: false },
   { key: "courses", name: "Courses", long: "Courses", href: "/courses", icon: GraduationCap, desc: "Search programmes by level, intake, duration and budget.", live: false },
   { key: "scholarships", name: "Scholarships", long: "Scholarships", href: "/scholarships", icon: Award, desc: "Government, university and private funding - with real deadlines.", live: false },
@@ -45,7 +45,7 @@ const byKey = (key: string) => NAV.find((n) => n.key === key)!;
 export const FOOTER_COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Explore",
-    links: ["subjects", "destinations", "universities", "courses", "scholarships"].map((k) => ({
+    links: ["subjects", "study-abroad", "universities", "courses", "scholarships"].map((k) => ({
       label: byKey(k).name,
       href: navHref(byKey(k)),
     })),

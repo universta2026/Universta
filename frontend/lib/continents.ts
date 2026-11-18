@@ -17,6 +17,14 @@ const ORDER = ["Africa", "Antarctica", "Asia", "Europe", "North America", "Ocean
 
 export type ContinentGroup<T> = { name: string; countries: T[] };
 
+/** "North America" -> "north-america": the continent part of /studyabroad/north-america. */
+export const continentSlug = (name: string) => name.trim().toLowerCase().replace(/\s+/g, "-");
+
+/** The continent group whose slug matches, or undefined (then the URL is probably a country). */
+export function findContinent<T>(groups: ContinentGroup<T>[], slug: string) {
+  return groups.find((g) => continentSlug(g.name) === slug.toLowerCase());
+}
+
 /** Continents that have at least one country, A-Z. Countries with an unknown code go to "Other". */
 export function groupByContinent<T extends { country_code: string | null }>(countries: T[]): ContinentGroup<T>[] {
   const map = new Map<string, T[]>();

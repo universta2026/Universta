@@ -6,10 +6,10 @@ export const HOME_STORAGE_KEY = "universta.home-country";
 /** subject[/spec][/level]/international-student[/country], e.g.
  *  /subjects/engineering/civil-engineering/bachelors/international-student/india */
 export function internationalHref(p: { subject: string; from?: string; spec?: string; level?: string }) {
-  // Without a country the visitor still has to pick one, on the subject-level page.
-  if (!p.from) return `/subjects/${p.subject}/international-student`;
+  // Without a country the visitor still has to pick one, on the matching "pick your country" page.
+  // The specialization / level stays in the URL so it is not lost after the country is chosen.
   const path = [p.subject, p.spec, p.level].filter(Boolean).join("/");
-  return `/subjects/${path}/international-student/${p.from}`;
+  return p.from ? `/subjects/${path}/international-student/${p.from}` : `/subjects/${path}/international-student`;
 }
 
 /** Replaces {subject}, {country}... in an editable text. Unknown placeholders are left alone

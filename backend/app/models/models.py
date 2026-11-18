@@ -106,6 +106,9 @@ class Country(Base):
     )
 
     enquiries: Mapped[list["Enquiry"]] = relationship(back_populates="preferred_country")
+    sections: Mapped[list["CountrySection"]] = relationship(
+        back_populates="country", cascade="all, delete-orphan"
+    )
 
     __table_args__ = (
         CheckConstraint(
@@ -113,6 +116,70 @@ class Country(Base):
             name="ck_countries_status",
         ),
         Index("ix_countries_status_display_order", "status", "display_order"),
+    )
+
+
+class CountrySection(Base):
+    """One content item on a Study Abroad country page (/studyabroad/<country>).
+
+    Same idea as subject_sections: `section` says which block of the page the item belongs to,
+    several rows of the same section make a list (e.g. many universities), one row with a long
+    `body` makes a text block (e.g. visa requirements).
+    """
+
+    __tablename__ = "country_sections"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    country_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("countries.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    # why | subject | course | university | exam | scholarship | visa | application | intake | cost | eligibility
+    section: Mapped[str] = mapped_column(String(30), nullable=False)
+
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    subtitle: Mapped[Optional[str]] = mapped_column(String(200))
+    body: Mapped[Optional[str]] = mapped_column(Text)  # rich text HTML
+    url: Mapped[Optional[str]] = mapped_column(String(500))
+    is_sponsored: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+
+    status: Mapped[str] = mapped_column(
+        String(30), nullable=False, default="draft", server_default="draft"
+    )
+    display_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=func.now()
+    )
+
+    country: Mapped["Country"] = relationship(back_populates="sections")
+
+    __table_args__ = (
+        CheckConstraint(
+            "section IN ('why', 'subject', 'course', 'university', 'exam', 'scholarship', 'visa', 'application', 'intake', 'cost', 'eligibility')",
+            name="ck_country_sections_section",
+        ),
+        CheckConstraint(
+            "status IN ('draft', 'pending_review', 'published', 'archived')",
+            name="ck_country_sections_status",
+        ),
+        Index(
+            "ix_country_sections_country_section_status_order",
+            "country_id",
+            "section",
+            "status",
+            "display_order",
+        ),
     )
 
 

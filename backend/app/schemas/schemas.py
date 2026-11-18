@@ -85,6 +85,22 @@ class SectionItem(ORMModel):
         return None
 
 
+class CountrySections(ORMModel):
+    """Content blocks of a Study Abroad country page (from country_sections), grouped by block."""
+
+    why: list[SectionItem] = Field(default_factory=list)
+    subjects: list[SectionItem] = Field(default_factory=list)
+    courses: list[SectionItem] = Field(default_factory=list)
+    universities: list[SectionItem] = Field(default_factory=list)
+    exams: list[SectionItem] = Field(default_factory=list)
+    scholarships: list[SectionItem] = Field(default_factory=list)
+    visa: list[SectionItem] = Field(default_factory=list)
+    applications: list[SectionItem] = Field(default_factory=list)
+    intakes: list[SectionItem] = Field(default_factory=list)
+    costs: list[SectionItem] = Field(default_factory=list)
+    eligibility: list[SectionItem] = Field(default_factory=list)
+
+
 class SubjectDetail(SubjectOut):
     specializations: list[SpecializationOut]
     study_levels: list[StudyLevelOut]
