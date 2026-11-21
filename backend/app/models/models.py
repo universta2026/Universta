@@ -161,6 +161,16 @@ class CountrySection(Base):
     is_sponsored: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default="false"
     )
+    # Optional links to existing pages. 'subject' rows link to a subject page (/subjects/<slug>),
+    # 'course' rows to a specialization page (/specializations/<slug>). When `url` is empty the
+    # API builds the link from these. Not used by university / exam / scholarship / intake rows:
+    # those have no tables yet (see backend/TODO_country_tables.md).
+    subject_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("subjects.id", ondelete="SET NULL"), nullable=True
+    )
+    specialization_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("specializations.id", ondelete="SET NULL"), nullable=True
+    )
 
     status: Mapped[str] = mapped_column(
         String(30), nullable=False, default="draft", server_default="draft"
@@ -177,6 +187,10 @@ class CountrySection(Base):
     )
 
     country: Mapped["Country"] = relationship(back_populates="sections")
+    subject: Mapped[Optional["Subject"]] = relationship(foreign_keys=[subject_id])
+    specialization: Mapped[Optional["Specialization"]] = relationship(
+        foreign_keys=[specialization_id]
+    )
 
     __table_args__ = (
         CheckConstraint(

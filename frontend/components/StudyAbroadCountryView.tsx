@@ -30,7 +30,9 @@ const BLOCKS: { id: keyof CountrySections; title: string; nav: string }[] = [
 
 // One block. A single item with text is shown as plain text (visa rules, eligibility...);
 // several items, or items without text, are shown as cards (universities, courses, scholarships...).
-function Items({ items, sponsored }: { items: SectionItem[]; sponsored: string }) {
+function Items({ items, sponsored, from }: { items: SectionItem[]; sponsored: string; from: string }) {
+  // Internal links (subject and specialization pages) carry ?from=<country> so the target page can say "in <country>".
+  const withFrom = (url: string) => (url.includes("?") ? url : `${url}?from=${encodeURIComponent(from)}`);
   if (items.length === 1 && items[0].body) {
     return <RichText html={items[0].body} />;
   }
@@ -46,7 +48,7 @@ function Items({ items, sponsored }: { items: SectionItem[]; sponsored: string }
                   {it.title}
                 </a>
               ) : (
-                <Link className="stretched" href={it.url} style={{ color: "inherit" }}>
+                <Link className="stretched" href={withFrom(it.url)} style={{ color: "inherit" }}>
                   {it.title}
                 </Link>
               )
@@ -133,7 +135,7 @@ export default function StudyAbroadCountryView({
           <>
             {blocks.map((b) => (
               <Section key={b.id} id={b.id} title={t(b.id, "title", b.title)} intro={t(b.id, "intro", "")}>
-                <Items items={sections[b.id] ?? []} sponsored={t("labels", "sponsored", "Sponsored")} />
+                <Items items={sections[b.id] ?? []} sponsored={t("labels", "sponsored", "Sponsored")} from={country.slug} />
               </Section>
             ))}
 
