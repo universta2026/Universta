@@ -2283,3 +2283,83 @@
     font-weight: 400;
     padding: 8px 12px;
   }
+
+
+  /* "Study X from <country>" banner: sits in the page content (subject page, under Where to study) */
+  .home-banner {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 28px;
+    border: 1px solid var(--blue-100);
+    border-radius: var(--r-panel);
+    background: linear-gradient(135deg, var(--blue-50), var(--white));
+  }
+
+  .home-banner-ico {
+    background: var(--white);
+    box-shadow: 0 1px 2px rgba(20, 30, 70, .08);
+  }
+
+  .home-banner-btn {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .home-banner {
+      grid-template-columns: auto minmax(0, 1fr);
+      padding: 20px;
+    }
+
+    .home-banner-btn {
+      grid-column: 1 / -1;
+      justify-content: center;
+    }
+  }
+
+  /* Sidebar enquiry form on desktop: compact so all 6 fields + button fit on a laptop screen with no scrolling.
+     (The same compact sizing already existed, but only inside the 760px mobile query.) */
+  @media (min-width: 1025px) {
+    .detail-aside {
+      top: calc(var(--header-h) + 16px);
+    }
+
+    .detail-aside .aside-cta {
+      padding: 18px 20px 20px;
+    }
+
+    .detail-aside .aside-cta h3 {
+      margin-top: 0;
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .detail-aside .lead-form {
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .detail-aside .lead-form .field {
+      gap: 4px;
+    }
+
+    .detail-aside .lead-form .field label {
+      font-size: 12.5px;
+      line-height: 15px;
+    }
+
+    .detail-aside .lead-form .input,
+    .detail-aside .lead-form .select,
+    .detail-aside .lead-form .subject-picker-btn {
+      height: 38px;
+      min-height: 0;
+      font-size: 14px;
+    }
+
+    .detail-aside .lead-form .btn {
+      height: 42px;
+      margin-top: 2px;
+    }
+  }
