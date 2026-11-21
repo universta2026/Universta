@@ -23,7 +23,8 @@ export type PageSections = Record<string, Record<string, unknown>>;
 
 async function get(path: string) {
   // revalidate: 30 -> changes published in Directus appear within ~30 seconds
-  return fetch(`${API_URL}${path}`, { next: { revalidate: 30 } });
+  // timeout: if the API (or its tunnel) hangs, give up after 8s instead of leaving the page loading forever
+  return fetch(`${API_URL}${path}`, { next: { revalidate: 30 }, signal: AbortSignal.timeout(8000) });
 }
 
 export async function getSubjects(): Promise<Subject[]> {
@@ -40,7 +41,7 @@ export async function getPageContent(pageKey: string): Promise<PageSections> {
   return data.sections as PageSections;
 }
 
-// Text of the /studyabroad pages. Shared defaults live in page_key = "study-abroad"; a country or a
+// Text of the /study-abroad pages. Shared defaults live in page_key = "study-abroad"; a country or a
 // continent can override any single value with rows under page_key = "study-abroad:{slug}"
 // (e.g. "study-abroad:germany", "study-abroad:europe"). Both are editable in Directus.
 export async function getStudyAbroadContent(itemSlug?: string): Promise<PageSections> {
@@ -188,7 +189,7 @@ export type Country = {
   is_popular?: boolean;
 };
 
-// Content blocks of /studyabroad/<country> (rows of country_sections in Directus). Same item shape as the subject pages.
+// Content blocks of /study-abroad/<country> (rows of country_sections in Directus). Same item shape as the subject pages.
 export type CountrySections = {
   why: SectionItem[];
   subjects: SectionItem[];

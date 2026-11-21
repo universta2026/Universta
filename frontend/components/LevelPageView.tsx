@@ -14,7 +14,7 @@ import HomeCountryBlock from "./HomeCountryBlock";
 import SaveButton from "./SaveButton";
 import SubjectIcon from "./SubjectIcon";
 import SubNav from "./SubNav";
-import { AsideLead, CostTable, DetailHero, DetailLayout, Faq, hrefFor, Note, NextStepsBand, Ph, Section, Ticks } from "./ui";
+import { LeadBand, CostTable, DetailHero, DetailLayout, Faq, hrefFor, Note, NextStepsBand, Ph, Section, Ticks } from "./ui";
 
 const entryLabel: Record<LevelKind, ReactNode> = {
   foundation: "School",
@@ -199,7 +199,7 @@ export default function LevelPageView({
 
             {hasSpecs && (
               <Section id="specializations" title={`${level.name} specializations`} intro={`Pick a specialization to see ${lvl} options for it.`}>
-                <div className="grid g-2">
+                <div className="grid g-3">
                   {specializations.map((sp) => (
                     <Link className="card" href={withFrom(`/subjects/${subjectSlug}/${sp.slug}/${level.slug}`, place?.slug)} key={sp.id}>
                       <div className="row between">
@@ -320,8 +320,7 @@ export default function LevelPageView({
         }
         aside={
           <>
-            {subjectSlug && <HomeCountryBlock field={fieldName} subject={subjectSlug} spec={specSlug} level={level.slug} />}
-            <AsideLead about={`${level.name} in ${fieldName}`} lead={lead} />
+            {subjectSlug && <HomeCountryBlock variant="banner" field={fieldName} subject={subjectSlug} spec={specSlug} level={level.slug} />}
           </>
         }
       />
@@ -333,6 +332,7 @@ export default function LevelPageView({
           { icon: Presentation, title: "Coaching", desc: "Prep for IELTS, GRE, GMAT", key: "coaching" },
         ]}
       />
+      <LeadBand about={`${level.name} in ${fieldName}`} lead={lead} />
     </main>
   );
 }

@@ -1,7 +1,7 @@
--- Editable text for the /studyabroad pages. Safe to run twice (existing rows are kept).
+-- Editable text for the /study-abroad pages. Safe to run twice (existing rows are kept).
 --
 -- HOW IT WORKS (no new table, no API change, no code change needed):
---   page_key = 'study-abroad'            -> default text shared by /studyabroad, every country page and every continent page
+--   page_key = 'study-abroad'            -> default text shared by /study-abroad, every country page and every continent page
 --   page_key = 'study-abroad:germany'    -> overrides for ONE country  (page_key = 'study-abroad:' + countries.slug)
 --   page_key = 'study-abroad:europe'     -> overrides for ONE continent (continent slug: africa, asia, europe,
 --                                           north-america, south-america, oceania, antarctica, other)
@@ -15,7 +15,7 @@
 -- Editors set the country's long text in countries.description OR in page_content overview/body.
 
 INSERT INTO page_content (id, page_key, section_key, content_key, content_value, status) VALUES
- -- /studyabroad (index)
+ -- /study-abroad (index)
  (gen_random_uuid(), 'study-abroad', 'index', 'title',             '"Where do you want to {study}?"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'index', 'intro',             '"Choose a continent or a country to see what it offers international students."', 'published'),
  (gen_random_uuid(), 'study-abroad', 'index', 'popular_eyebrow',   '"Popular"', 'published'),
@@ -32,7 +32,7 @@ INSERT INTO page_content (id, page_key, section_key, content_key, content_value,
  (gen_random_uuid(), 'study-abroad', 'crumbs','home',              '"Home"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'crumbs','study_abroad',      '"Study abroad"', 'published'),
 
- -- country page /studyabroad/<country-slug>
+ -- country page /study-abroad/<country-slug>
  (gen_random_uuid(), 'study-abroad', 'hero',     'title',  '"Study in {country}"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'hero',     'cta',    '"Talk to an expert"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'labels',   'sponsored', '"Sponsored"', 'published'),
@@ -67,7 +67,7 @@ INSERT INTO page_content (id, page_key, section_key, content_key, content_value,
  (gen_random_uuid(), 'study-abroad', 'nav', 'costs',        '"Cost"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'nav', 'eligibility',  '"Eligibility"', 'published'),
 
- -- continent page /studyabroad/<continent-slug> (same section names, different titles)
+ -- continent page /study-abroad/<continent-slug> (same section names, different titles)
  (gen_random_uuid(), 'study-abroad', 'countries', 'title', '"Countries in {continent}"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'others',    'title', '"Explore other continents"', 'published'),
  (gen_random_uuid(), 'study-abroad', 'others',    'link',  '"Explore"', 'published'),

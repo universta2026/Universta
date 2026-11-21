@@ -52,7 +52,7 @@ COLUMN_BLOCKS = ("why", "visa", "application", "cost", "eligibility")
 
 @router.get("/countries/{slug}/sections", response_model=schemas.CountrySections)
 def get_country_sections(slug: str, db: Session = Depends(get_db)):
-    """Published content blocks of /studyabroad/<slug>, e.g. {"universities": [...], "visa": [...]}."""
+    """Published content blocks of /study-abroad/<slug>, e.g. {"universities": [...], "visa": [...]}."""
     country = db.scalar(
         select(Country).where(Country.slug == slug, Country.status == "published")
     )

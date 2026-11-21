@@ -37,7 +37,7 @@ export default async function InternationalStudentIndexPage() {
           {subjects.length === 0 ? (
             <Note>No subjects are available yet.</Note>
           ) : (
-            <div className="grid g-3">
+            <div className="grid g-4">
               {subjects.map((s) => (
                 <div className="card" key={s.id}>
                   <SubjectIcon name={s.icon_key} slug={s.slug} />

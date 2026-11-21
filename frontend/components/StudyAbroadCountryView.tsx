@@ -1,10 +1,14 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, Award, FileCheck, Globe, MessageCircle, Plane } from "lucide-react";
+import { ArrowRight, Award, FileCheck, Globe, GraduationCap, Landmark, MessageCircle, Plane } from "lucide-react";
+import { CountryTile } from "@/components/PlaceTile";
+import { AdSlot, BandSection, CtaStrip } from "@/components/CountryBlocks";
+import Ph from "@/components/Ph";
 import PopularCountries from "@/components/PopularCountries";
 import RichText from "@/components/RichText";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
-import { AsideLead, DetailHero, DetailLayout, Faq, NextStepsBand, Section, withHighlight } from "@/components/ui";
+import { Band, LeadBand, DetailHero, Faq, NextStepsBand, withHighlight } from "@/components/ui";
 import type { Country, CountrySections, PageSections, SectionItem, Subject } from "@/lib/api";
 import { text } from "@/lib/api";
 import { continentSlug, groupByContinent } from "@/lib/continents";
@@ -34,12 +38,17 @@ function Items({ items, sponsored, from }: { items: SectionItem[]; sponsored: st
   // Internal links (subject and specialization pages) carry ?from=<country> so the target page can say "in <country>".
   const withFrom = (url: string) => (url.includes("?") ? url : `${url}?from=${encodeURIComponent(from)}`);
   if (items.length === 1 && items[0].body) {
-    return <RichText html={items[0].body} />;
+    return (
+      <div className="rich-panel">
+        <RichText html={items[0].body} />
+      </div>
+    );
   }
   return (
-    <div className="grid g-2">
-      {items.map((it) => (
-        <div className="card" key={it.id}>
+    <div className="grid g-3">
+      {items.map((it, i) => (
+        <div className={`card info-card${it.url ? " is-link" : ""}`} key={it.id}>
+          <span className="info-no">{String(i + 1).padStart(2, "0")}</span>
           {it.is_sponsored && <span className="tag tag-cloud">{sponsored}</span>}
           <h3 className="card-title">
             {it.url ? (
@@ -68,7 +77,7 @@ function Items({ items, sponsored, from }: { items: SectionItem[]; sponsored: st
   );
 }
 
-// /studyabroad/germany
+// /study-abroad/germany
 // Everything shown comes from the API: the country row (name, code, description), its country_sections
 // rows, and page_content rows (page_key "study-abroad" for defaults, "study-abroad:germany" for this country).
 // A block with no rows is not rendered.
@@ -103,20 +112,79 @@ export default function StudyAbroadCountryView({
     ...(faq.length > 0 ? [{ id: "faq", label: t("nav", "faq", "FAQ") }] : []),
   ];
 
+  // One entry per full-width band. Call-to-action strips and ads are slotted in between by position.
+  const bands: { key: string; node: ReactNode }[] = [
+    ...blocks.map((b) => ({
+      key: b.id,
+      node: (
+        <BandSection id={b.id} title={t(b.id, "title", b.title)} intro={t(b.id, "intro", "")}>
+          <Items items={sections[b.id] ?? []} sponsored={t("labels", "sponsored", "Sponsored")} from={country.slug} />
+        </BandSection>
+      ),
+    })),
+    ...(nearby.length > 0 && continent
+      ? [
+          {
+            key: "nearby",
+            node: (
+              <BandSection id="nearby" title={t("nearby", "title", "More countries in {continent}")} intro={t("nearby", "intro", "")}>
+                <PopularCountries countries={nearby.map((c) => ({ name: c.name, slug: c.slug, code: c.country_code, href: `/study-abroad/${c.slug}` }))} />
+                <Link className="link-arrow mt-6" href={`/study-abroad/${continentSlug(continent.name)}`}>
+                  {t("nearby", "link", "View all in {continent}")}
+                  <ArrowRight className="ico" aria-hidden />
+                </Link>
+              </BandSection>
+            ),
+          },
+        ]
+      : []),
+    ...(faq.length > 0
+      ? [
+          {
+            key: "faq",
+            node: (
+              <BandSection id="faq" title={t("faq", "title", "Studying in {country}")}>
+                <Faq items={faq} />
+              </BandSection>
+            ),
+          },
+        ]
+      : []),
+  ];
+
+  const extras = (i: number): ReactNode => {
+    if (i === 1)
+      return (
+        <CtaStrip
+          title={t("cta", "shortlist_title", `Get your personal ${country.name} shortlist`)}
+          text={t("cta", "shortlist_text", "Tell us your field and budget. We match you with universities, scholarships and intakes that fit.")}
+          primary={t("cta", "shortlist_button", "Talk to an expert")}
+          secondary={t("cta", "shortlist_secondary", "Get a free shortlist")}
+        />
+      );
+    if (i === 2) return <AdSlot size="wide" />;
+    if (i === 4)
+      return (
+        <CtaStrip
+          title={t("cta", "apply_title", `Ready to apply to ${country.name}?`)}
+          text={t("cta", "apply_text", "An adviser can check your eligibility, documents and deadlines, free of charge.")}
+          primary={t("cta", "apply_button", "Start my application")}
+        />
+      );
+    if (i === 5) return <AdSlot />;
+    return null;
+  };
+
   return (
     <main>
       <DetailHero
         crumbs={[
           { label: t("crumbs", "home", "Home"), href: "/" },
-          { label: t("crumbs", "study_abroad", "Study abroad"), href: "/studyabroad" },
-          ...(continent ? [{ label: continent.name, href: `/studyabroad/${continentSlug(continent.name)}` }] : []),
+          { label: t("crumbs", "study_abroad", "Study abroad"), href: "/study-abroad" },
+          ...(continent ? [{ label: continent.name, href: `/study-abroad/${continentSlug(continent.name)}` }] : []),
           { label: country.name },
         ]}
-        tile={
-          <span className="ico-tile">
-            <Globe className="ico" aria-hidden />
-          </span>
-        }
+        tile={<CountryTile code={country.country_code} />}
         title={withHighlight(fill(text(content, "hero", "title", "Study in {country}"), { ...v, country: `{${country.name}}` }))}
         lead={lead || undefined}
         actions={
@@ -127,37 +195,33 @@ export default function StudyAbroadCountryView({
             </a>
           </>
         }
+        facts={[
+          {
+            icon: Globe,
+            label: t("facts", "continent_label", "Continent"),
+            value: continent ? (
+              <Link className="fact-link" href={`/study-abroad/${continentSlug(continent.name)}`}>
+                {continent.name}
+              </Link>
+            ) : (
+              "-"
+            ),
+          },
+          { icon: Landmark, label: t("facts", "universities_label", "Universities"), value: <Ph>NUMBER</Ph> },
+          { icon: GraduationCap, label: t("facts", "courses_label", "Courses"), value: <Ph>NUMBER</Ph> },
+          { icon: Award, label: t("facts", "scholarships_label", "Scholarships"), value: <Ph>NUMBER</Ph> },
+        ]}
       />
       {nav.length > 0 && <SubNav items={nav} />}
 
-      <DetailLayout
-        main={
-          <>
-            {blocks.map((b) => (
-              <Section key={b.id} id={b.id} title={t(b.id, "title", b.title)} intro={t(b.id, "intro", "")}>
-                <Items items={sections[b.id] ?? []} sponsored={t("labels", "sponsored", "Sponsored")} from={country.slug} />
-              </Section>
-            ))}
-
-            {nearby.length > 0 && continent && (
-              <Section id="nearby" title={t("nearby", "title", "More countries in {continent}")} intro={t("nearby", "intro", "")}>
-                <PopularCountries countries={nearby.map((c) => ({ name: c.name, slug: c.slug, code: c.country_code, href: `/studyabroad/${c.slug}` }))} />
-                <Link className="link-arrow mt-6" href={`/studyabroad/${continentSlug(continent.name)}`}>
-                  {t("nearby", "link", "View all in {continent}")}
-                  <ArrowRight className="ico" aria-hidden />
-                </Link>
-              </Section>
-            )}
-
-            {faq.length > 0 && (
-              <Section id="faq" title={t("faq", "title", "Studying in {country}")}>
-                <Faq items={faq} />
-              </Section>
-            )}
-          </>
-        }
-        aside={<AsideLead about={country.name} lead={{ subjects: subjects.map((s) => ({ name: s.name, specializations: s.specializations.map((x) => x.name) })) }} />}
-      />
+      <div className="bands">
+        {bands.map((b, i) => (
+          <Band key={b.key}>
+            {b.node}
+            {extras(i)}
+          </Band>
+        ))}
+      </div>
 
       <NextStepsBand
         title={t("next_steps", "title", "Your next step")}
@@ -168,6 +232,7 @@ export default function StudyAbroadCountryView({
           { icon: MessageCircle, title: t("next_steps", "consultants_title", "Find a consultant"), desc: t("next_steps", "consultants_desc", "Verified, reviewed advisers"), key: "consultants" },
         ]}
       />
+      <LeadBand about={country.name} lead={{ subjects: subjects.map((s) => ({ name: s.name, specializations: s.specializations.map((x) => x.name) })) }} />
     </main>
   );
 }

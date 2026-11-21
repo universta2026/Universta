@@ -8,7 +8,7 @@ import PopularCountries from "@/components/PopularCountries";
 import SaveButton from "@/components/SaveButton";
 import SubjectIcon from "@/components/SubjectIcon";
 import { AdBlock, CtaBlock } from "@/components/SubjectBlocks";
-import { AsideLead, DetailHero, DetailLayout, Note, Section, withHighlight } from "@/components/ui";
+import { LeadBand, DetailHero, DetailLayout, Note, Section, withHighlight } from "@/components/ui";
 import { getCountries, getPageContent, getSubject, getSubjects, text } from "@/lib/api";
 import type { SectionItem } from "@/lib/api";
 import { groupByContinent } from "@/lib/continents";
@@ -181,8 +181,8 @@ export default async function InternationalLandingView(props: InternationalLandi
             </div>
           </>
         }
-        aside={<AsideLead about={focus} lead={lead} />}
       />
+      <LeadBand about={focus} lead={lead} />
     </main>
   );
 }

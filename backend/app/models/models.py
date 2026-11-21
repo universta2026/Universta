@@ -134,7 +134,7 @@ class Country(Base):
 
 
 class CountrySection(Base):
-    """One content item on a Study Abroad country page (/studyabroad/<country>).
+    """One content item on a Study Abroad country page (/study-abroad/<country>).
 
     Same idea as subject_sections: `section` says which block of the page the item belongs to,
     several rows of the same section make a list (e.g. many universities), one row with a long

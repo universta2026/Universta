@@ -61,7 +61,7 @@ function CardLink({ href, label, sponsored }: { href: string; label: string; spo
 
 export function SectionCards({ items, linkLabel = "Visit website" }: { items: SectionItem[]; linkLabel?: string }) {
   return (
-    <div className="grid g-2">
+    <div className="grid g-3">
       {items.map((item) => (
         <SectionCard key={item.id} item={item} linkLabel={linkLabel} />
       ))}

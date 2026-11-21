@@ -2363,3 +2363,1132 @@
       margin-top: 2px;
     }
   }
+
+
+/* =========================================================
+   Hover interactions (Brand Kit blue)
+   - Link cards / tiles: blue fills in from left to right, soft blue shadow, slight lift
+   - Buttons: lift + shadow, outline buttons fill left to right
+   - Chips, tags, nav links: smooth colour sweep
+   Disabled for touch-only devices and for reduced-motion users.
+   ========================================================= */
+@media (hover: hover) and (pointer: fine) {
+  :root {
+    --hover-ease: cubic-bezier(.22, .61, .36, 1);
+    --shadow-blue: 0 14px 32px rgba(3, 62, 255, .22), 0 3px 8px rgba(3, 62, 255, .12);
+  }
+
+  /* ---- Cards: left-to-right blue fill ---- */
+  a.card,
+  .card.is-link {
+    isolation: isolate;
+    overflow: hidden;
+    transition: transform .3s var(--hover-ease), box-shadow .3s var(--hover-ease),
+      border-color .3s var(--hover-ease), color .3s var(--hover-ease);
+  }
+
+  a.card::before,
+  .card.is-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, var(--blue) 0%, var(--blue-600) 100%);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .45s var(--hover-ease);
+  }
+
+  a.card:hover,
+  a.card:focus-visible,
+  .card.is-link:hover,
+  .card.is-link:focus-visible {
+    border-color: var(--blue);
+    box-shadow: var(--shadow-blue);
+    transform: translateY(-4px);
+    color: var(--white);
+  }
+
+  a.card:hover::before,
+  a.card:focus-visible::before,
+  .card.is-link:hover::before,
+  .card.is-link:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  /* Text inside a filled card flips to white */
+  a.card:hover *,
+  a.card:focus-visible *,
+  .card.is-link:hover *,
+  .card.is-link:focus-visible * {
+    color: var(--white);
+    transition: color .3s var(--hover-ease) .08s;
+  }
+
+  a.card:hover .muted,
+  .card.is-link:hover .muted {
+    color: rgba(255, 255, 255, .82);
+  }
+
+  a.card:hover .tag,
+  .card.is-link:hover .tag {
+    background: rgba(255, 255, 255, .18);
+    border-color: transparent;
+  }
+
+  a.card:hover .ico,
+  .card.is-link:hover .ico {
+    transform: translateX(3px);
+  }
+
+  a.card .ico,
+  .card.is-link .ico {
+    transition: transform .3s var(--hover-ease);
+  }
+
+  /* ---- Buttons ---- */
+  .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition: background .25s var(--hover-ease), border-color .25s var(--hover-ease),
+      color .25s var(--hover-ease), transform .25s var(--hover-ease), box-shadow .25s var(--hover-ease);
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary:hover,
+  .btn-dark:hover {
+    box-shadow: var(--shadow-blue);
+  }
+
+  /* Outline / ghost / white buttons: blue sweeps in from the left */
+  .btn-outline::before,
+  .btn-ghost::before,
+  .btn-white::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .4s var(--hover-ease);
+  }
+
+  .btn-outline:hover,
+  .btn-ghost:hover,
+  .btn-white:hover {
+    background: var(--white);
+    border-color: var(--blue);
+    color: var(--white);
+    box-shadow: var(--shadow-blue);
+  }
+
+  .btn-outline:hover::before,
+  .btn-ghost:hover::before,
+  .btn-white:hover::before {
+    transform: scaleX(1);
+  }
+
+  .btn-ghost.is-on:hover {
+    background: var(--blue-50);
+  }
+
+  /* ---- Chips & tag links ---- */
+  .chip,
+  .tag-link {
+    transition: background .25s var(--hover-ease), color .25s var(--hover-ease),
+      border-color .25s var(--hover-ease), transform .25s var(--hover-ease), box-shadow .25s var(--hover-ease);
+  }
+
+  .chip:not(.is-on):hover {
+    background: var(--blue-50);
+    border-color: var(--blue);
+    color: var(--blue);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(3, 62, 255, .16);
+  }
+
+  .tag-link:hover {
+    background: var(--blue);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+
+  /* ---- Header nav, dropdown and footer links: animated underline ---- */
+  .nav > a,
+  .nav-more > button,
+  .site-footer a,
+  .quick-links a {
+    background-image: linear-gradient(var(--blue), var(--blue));
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 0 2px;
+    transition: background-size .35s var(--hover-ease), color .25s var(--hover-ease), background-color .25s var(--hover-ease);
+  }
+
+  .nav > a:hover,
+  .nav-more > button:hover,
+  .site-footer a:hover,
+  .quick-links a:hover {
+    background-size: 100% 2px;
+  }
+
+  .menu a:hover,
+  .subnav a:hover {
+    padding-left: 18px;
+  }
+
+  .menu a,
+  .subnav a {
+    transition: background .25s var(--hover-ease), color .25s var(--hover-ease), padding .25s var(--hover-ease);
+  }
+
+  /* ---- Table rows ---- */
+  .tbl tbody tr {
+    transition: box-shadow .25s var(--hover-ease);
+  }
+
+  .tbl tbody tr:hover {
+    box-shadow: inset 3px 0 0 var(--blue);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.card:hover,
+  .card.is-link:hover,
+  .btn:hover,
+  .chip:hover {
+    transform: none !important;
+  }
+
+  a.card::before,
+  .card.is-link::before,
+  .btn::before {
+    transition: none !important;
+  }
+}
+
+
+/* =========================================================
+   Full-width content + enquiry form band above the footer
+   (replaces the sticky right-hand form)
+   ========================================================= */
+.detail {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.detail-extra {
+  margin-top: 48px;
+}
+
+
+
+/* Tablet: 3-column grids drop to 2 (4-column ones already do) so cards stay readable */
+@media (max-width: 1024px) {
+  .g-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .g-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   FAQ: numbered cards, blue accent bar, animated open / close
+   ========================================================= */
+.faq {
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  display: grid;
+  gap: 14px;
+  counter-reset: faq;
+}
+
+.faq details {
+  counter-increment: faq;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease;
+}
+
+.faq details:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* Accent bar on the left: grows from top to bottom when the question is open */
+.faq details::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--blue);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform .4s cubic-bezier(.22, .61, .36, 1);
+}
+
+.faq details[open] {
+  border-color: var(--blue-200);
+  background: linear-gradient(90deg, var(--blue-50), var(--white) 70%);
+  box-shadow: 0 10px 28px rgba(3, 62, 255, .10);
+}
+
+.faq details[open]::before {
+  transform: scaleY(1);
+}
+
+.faq summary {
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  font: 600 17px/26px var(--font-body);
+  color: var(--ink);
+  transition: color .25s ease;
+}
+
+/* Number badge: 01, 02, 03 ... */
+.faq summary::before {
+  content: counter(faq, decimal-leading-zero);
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--blue-50);
+  color: var(--blue);
+  font: 700 14px/1 var(--font-head);
+  transition: background-color .3s ease, color .3s ease;
+}
+
+.faq details[open] summary::before {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.faq summary .ico {
+  flex: none;
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  margin: 0 0 0 auto;
+  padding: 7px;
+  border-radius: 50%;
+  background: var(--blue-50);
+  color: var(--blue);
+  transition: transform .35s cubic-bezier(.22, .61, .36, 1), background-color .3s ease, color .3s ease;
+}
+
+.faq details[open] summary .ico {
+  transform: rotate(180deg);
+  background: var(--blue);
+  color: var(--white);
+}
+
+.faq .ans {
+  padding: 0 22px 22px 78px;
+  color: var(--slate-600);
+  line-height: 26px;
+}
+
+.faq details[open] .ans {
+  animation: faq-in .4s cubic-bezier(.22, .61, .36, 1);
+}
+
+@keyframes faq-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Smooth height animation where the browser supports it (Chrome / Edge); others just fade in */
+@supports (interpolate-size: allow-keywords) {
+  .faq details {
+    interpolate-size: allow-keywords;
+  }
+
+  .faq details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size .4s cubic-bezier(.22, .61, .36, 1), content-visibility .4s allow-discrete;
+  }
+
+  .faq details[open]::details-content {
+    block-size: auto;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .faq details:not([open]):hover {
+    border-color: var(--blue);
+    box-shadow: 0 8px 22px rgba(3, 62, 255, .14);
+    transform: translateY(-2px);
+  }
+
+  .faq summary:hover {
+    color: var(--blue);
+  }
+
+  .faq details:not([open]) summary:hover::before {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  .faq details:not([open]) summary:hover .ico {
+    background: var(--blue);
+    color: var(--white);
+  }
+}
+
+@media (max-width: 640px) {
+  .faq summary {
+    padding: 16px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .faq summary::before {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .faq .ans {
+    padding: 0 16px 18px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq details[open] .ans {
+    animation: none;
+  }
+
+  .faq details::details-content {
+    transition: none;
+  }
+}
+
+
+/* =========================================================
+   CTA banner above the footer + enquiry pop-up
+   ========================================================= */
+.cta-banner {
+  position: relative;
+  overflow: hidden;
+  padding: 72px 0;
+  color: var(--white);
+  background: linear-gradient(115deg, var(--blue-900) 0%, var(--blue-800) 38%, var(--blue-600) 78%, var(--blue) 100%);
+}
+
+.cta-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cta-orb-a {
+  width: 460px;
+  height: 460px;
+  right: -120px;
+  top: -200px;
+  background: radial-gradient(circle, rgba(130, 158, 255, .38), rgba(130, 158, 255, 0) 70%);
+}
+
+.cta-orb-b {
+  width: 360px;
+  height: 360px;
+  left: -140px;
+  bottom: -200px;
+  background: radial-gradient(circle, rgba(74, 114, 255, .35), rgba(74, 114, 255, 0) 70%);
+}
+
+.cta-banner-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 48px;
+  align-items: center;
+}
+
+.cta-banner-copy {
+  max-width: 720px;
+}
+
+.cta-banner h2 {
+  color: var(--white);
+}
+
+.cta-banner p {
+  color: var(--blue-100);
+  font-size: 17px;
+  line-height: 27px;
+}
+
+.cta-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .28);
+  color: var(--white);
+  font: 600 13px/1 var(--font-body);
+  letter-spacing: .02em;
+}
+
+.cta-points {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.cta-points li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--white);
+  font: 500 15px/20px var(--font-body);
+}
+
+.cta-points .ico {
+  width: 18px;
+  height: 18px;
+  padding: 3px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .18);
+}
+
+.cta-banner-action {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.cta-banner .btn-lg,
+.cta-banner-btn {
+  height: 60px;
+  padding: 0 32px;
+  font-size: 17px;
+  border-radius: 999px;
+  color: var(--blue);
+  box-shadow: 0 10px 30px rgba(4, 18, 74, .35);
+}
+
+.cta-banner-btn .ico {
+  transition: transform .3s ease;
+}
+
+.cta-banner-btn:hover .ico {
+  transform: translateX(5px);
+}
+
+.cta-banner-note {
+  color: var(--blue-200);
+  font-size: 13px;
+}
+
+/* On the blue banner the white button fills with ink, not blue (blue on blue would vanish) */
+.cta-banner .btn-white::before {
+  background: var(--ink);
+}
+
+.cta-banner .btn-white:hover {
+  border-color: var(--ink);
+  color: var(--white);
+  box-shadow: 0 14px 34px rgba(4, 18, 74, .5);
+}
+
+@media (max-width: 860px) {
+  .cta-banner {
+    padding: 56px 0;
+  }
+
+  .cta-banner-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .cta-banner-action {
+    justify-items: start;
+  }
+}
+
+/* ---- Pop-up ---- */
+html.modal-open {
+  overflow: hidden;
+}
+
+.lead-modal {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  width: min(760px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  overflow: visible;
+}
+
+.lead-modal::backdrop {
+  background: rgba(4, 18, 74, .72);
+  backdrop-filter: blur(4px);
+}
+
+.lead-modal[open] {
+  animation: lead-pop .35s cubic-bezier(.22, .61, .36, 1);
+}
+
+.lead-modal[open]::backdrop {
+  animation: lead-fade .3s ease;
+}
+
+@keyframes lead-pop {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lead-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lead-modal-card {
+  position: relative;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  background: var(--white);
+  border-radius: var(--r-panel);
+  border-top: 5px solid var(--blue);
+  padding: 32px;
+  box-shadow: 0 30px 80px rgba(4, 18, 74, .45);
+}
+
+.lead-modal-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--blue-50);
+  color: var(--blue);
+  cursor: pointer;
+  transition: background-color .25s ease, color .25s ease, transform .25s ease;
+}
+
+.lead-modal-x:hover {
+  background: var(--blue);
+  color: var(--white);
+  transform: rotate(90deg);
+}
+
+.lead-modal-card .lead-form {
+  padding: 0;
+  margin-top: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+  align-items: end;
+}
+
+.lead-modal-card .lead-form > .btn,
+.lead-modal-card .lead-form > .ok {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .lead-modal-card {
+    padding: 24px 18px;
+  }
+
+  .lead-modal-card .lead-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lead-modal[open],
+  .lead-modal[open]::backdrop {
+    animation: none;
+  }
+}
+
+
+/* =========================================================
+   Scroll reveal (see components/ScrollReveal.tsx)
+   Hidden only while JS is running; the animation does not keep
+   a transform afterwards, so card hover effects still work.
+   ========================================================= */
+html.js-reveal [data-reveal]:not(.is-in) {
+  opacity: 0;
+}
+
+html.js-reveal [data-reveal].is-in {
+  animation: reveal-up .7s cubic-bezier(.22, .61, .36, 1) var(--rd, 0ms) backwards;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* Header tile on the study-abroad pages: flag (country), globe (continent) */
+.hero-tile {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  background: var(--blue-50);
+  color: var(--blue);
+  box-shadow: 0 8px 20px rgba(3, 62, 255, .14);
+}
+
+.hero-tile-flag {
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+
+.hero-tile-globe {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.hero-tile .ico {
+  width: 30px;
+  height: 30px;
+}
+
+
+/* =========================================================
+   Alternating full-width section bands: white / light blue
+   ========================================================= */
+.bands {
+  background: var(--white);
+}
+
+.band {
+  padding: 64px 0;
+  background: var(--white);
+}
+
+.band:nth-child(even) {
+  background: linear-gradient(180deg, var(--blue-50) 0%, #F6F8FF 100%);
+  border-top: 1px solid var(--blue-100);
+  border-bottom: 1px solid var(--blue-100);
+}
+
+/* the section's own divider and spacing are replaced by the band */
+.band .detail-main > section {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+/* cards sit white on the light-blue bands so they stand out */
+.band:nth-child(even) .card-flat {
+  background: var(--white);
+  border-color: var(--blue-100);
+}
+
+@media (max-width: 760px) {
+  .band {
+    padding: 44px 0;
+  }
+}
+
+
+/* =========================================================
+   Country page: livelier sections, CTA strips and ad slots
+   ========================================================= */
+.bands {
+  counter-reset: band;
+}
+
+.band {
+  position: relative;
+  overflow: hidden;
+  counter-increment: band;
+}
+
+/* big faded section number in the corner */
+.band::before {
+  content: counter(band, decimal-leading-zero);
+  position: absolute;
+  top: 18px;
+  right: max(24px, calc((100vw - 1200px) / 2));
+  font: 800 120px/1 var(--font-head);
+  color: var(--blue);
+  opacity: .06;
+  pointer-events: none;
+  user-select: none;
+}
+
+.band:nth-child(even)::before {
+  opacity: .09;
+}
+
+/* soft dotted pattern on the light-blue bands */
+.band:nth-child(even)::after {
+  content: "";
+  position: absolute;
+  left: -40px;
+  bottom: -40px;
+  width: 260px;
+  height: 260px;
+  background-image: radial-gradient(var(--blue-200) 1.5px, transparent 1.6px);
+  background-size: 18px 18px;
+  opacity: .55;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle at 0 100%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(circle at 0 100%, #000 0%, transparent 70%);
+}
+
+.band > .shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Section header ---- */
+.band-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.band-ico {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--blue-400), var(--blue-600));
+  box-shadow: 0 10px 22px rgba(3, 62, 255, .28);
+}
+
+.band-ico .ico {
+  width: 26px;
+  height: 26px;
+}
+
+.band-head .t-h2 {
+  margin-top: 2px;
+}
+
+.band-head .t-h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--blue-300));
+}
+
+.band-body {
+  margin-top: 32px;
+}
+
+/* ---- Cards ---- */
+.info-card {
+  padding-top: 30px;
+  border-top: 3px solid var(--blue-100);
+}
+
+.info-card .card-title {
+  padding-right: 36px;
+}
+
+.info-no {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font: 800 22px/1 var(--font-head);
+  color: var(--blue-200);
+  transition: color .3s ease;
+}
+
+a.info-card:hover .info-no,
+.info-card.is-link:hover .info-no {
+  color: rgba(255, 255, 255, .55);
+}
+
+.info-card:hover {
+  border-top-color: var(--blue);
+}
+
+/* ---- Text blocks (why study, visa, eligibility ...) ---- */
+.rich-panel {
+  position: relative;
+  padding: 32px 36px;
+  background: var(--white);
+  border: 1px solid var(--blue-100);
+  border-left: 5px solid var(--blue);
+  border-radius: var(--r-card);
+  box-shadow: 0 14px 36px rgba(3, 62, 255, .08);
+}
+
+.rich-panel p:first-of-type {
+  font-size: 19px;
+  line-height: 31px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.rich-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+  display: grid;
+  gap: 10px;
+}
+
+.rich-panel ul li {
+  position: relative;
+  padding-left: 32px;
+}
+
+.rich-panel ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 12px no-repeat;
+}
+
+.rich-panel strong {
+  color: var(--blue-700);
+}
+
+/* ---- Call-to-action strip ---- */
+.cta-strip {
+  position: relative;
+  overflow: hidden;
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: 28px 32px;
+  border-radius: var(--r-panel);
+  color: var(--white);
+  background: linear-gradient(115deg, var(--blue-900) 0%, var(--blue-700) 50%, var(--blue) 100%);
+  box-shadow: 0 18px 40px rgba(3, 62, 255, .28);
+}
+
+.cta-strip::after {
+  content: "";
+  position: absolute;
+  right: -80px;
+  top: -120px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(130, 158, 255, .4), transparent 70%);
+  pointer-events: none;
+}
+
+.cta-strip-ico {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .16);
+  border: 1px solid rgba(255, 255, 255, .28);
+}
+
+.cta-strip-ico .ico {
+  width: 26px;
+  height: 26px;
+}
+
+.cta-strip h3 {
+  font: 700 22px/30px var(--font-head);
+  color: var(--white);
+}
+
+.cta-strip p {
+  margin-top: 4px;
+  color: var(--blue-100);
+}
+
+.cta-strip-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cta-strip .btn-white::before {
+  background: var(--ink);
+}
+
+.cta-strip .btn-white:hover {
+  border-color: var(--ink);
+  color: var(--white);
+}
+
+.cta-strip-ghost {
+  background: transparent;
+  color: var(--white);
+  border-color: rgba(255, 255, 255, .5);
+}
+
+.cta-strip-ghost:hover {
+  background: rgba(255, 255, 255, .14);
+  border-color: var(--white);
+  color: var(--white);
+}
+
+/* ---- Advertisement slot ---- */
+.ad-slot {
+  position: relative;
+  margin-top: 56px;
+  padding: 22px 24px 20px;
+  border: 1.5px dashed var(--blue-200);
+  border-radius: var(--r-card);
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .8) 0 14px, rgba(238, 242, 255, .8) 14px 28px);
+}
+
+.ad-label {
+  position: absolute;
+  top: -11px;
+  left: 18px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--blue-200);
+  color: var(--slate-500);
+  font: 600 11px/18px var(--font-body);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ad-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 90px;
+  color: var(--slate-500);
+  font-weight: 600;
+}
+
+.ad-empty .ico {
+  width: 22px;
+  height: 22px;
+  color: var(--blue-300);
+}
+
+.ad-empty small {
+  color: var(--slate-400, var(--slate-500));
+  font-weight: 500;
+}
+
+.ad-wide .ad-empty {
+  min-height: 200px;
+}
+
+.ad-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.ad-body strong {
+  font: 700 18px/26px var(--font-head);
+}
+
+.ad-body p {
+  margin-top: 2px;
+  color: var(--slate-600);
+}
+
+@media (max-width: 860px) {
+  .cta-strip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding: 24px 22px;
+  }
+
+  .band::before {
+    font-size: 72px;
+    top: 10px;
+  }
+
+  .rich-panel {
+    padding: 24px 22px;
+  }
+
+  .ad-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .band-head {
+    gap: 14px;
+  }
+
+  .band-ico {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+}

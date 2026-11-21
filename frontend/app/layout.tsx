@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import SiteFooter from "@/components/SiteFooter";
+import ScrollReveal from "@/components/ScrollReveal";
 import SiteHeader from "@/components/SiteHeader";
 import "./globals.css";
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         {children}
         <SiteFooter />
+        <ScrollReveal />
       </body>
     </html>
   );

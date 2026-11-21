@@ -6,7 +6,7 @@ import { getCountries, getCountrySections, getStudyAbroadContent, getSubjects, t
 import { findContinent, groupByContinent } from "@/lib/continents";
 import { fill } from "@/lib/eligibility";
 
-// /studyabroad/<slug> is either a continent (/studyabroad/europe) or a country (/studyabroad/germany).
+// /study-abroad/<slug> is either a continent (/study-abroad/europe) or a country (/study-abroad/germany).
 // Both live under the same dynamic segment because Next.js allows only one per level.
 // Continents are checked first; if a continent and a country ever shared a slug, the continent wins.
 async function resolve(slug: string) {
