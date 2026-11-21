@@ -270,6 +270,7 @@ export default async function SubjectDetailPage({ params }: Props) {
                 </div>
               )}
               <CostTable lastCol="post-study" />
+              <HomeCountryBlock variant="banner" field={short} subject={subject.slug} />
             </Section>
 
             <Section id="careers" title={copy.careersTitle} intro={copy.careersIntro}>
@@ -281,12 +282,7 @@ export default async function SubjectDetailPage({ params }: Props) {
             </Section>
           </>
         }
-        aside={
-          <>
-            <HomeCountryBlock field={short} subject={subject.slug} />
-            <AsideLead about={short} lead={lead} />
-          </>
-        }
+        aside={<AsideLead about={short} lead={lead} />}
       />
 
       <NextStepsBand

@@ -8,7 +8,9 @@ export default async function HomeCountryBlock({
   subject,
   spec,
   level,
+  variant,
 }: {
+  variant?: "card" | "banner";
   field: string;
   subject: string;
   spec?: string;
@@ -28,6 +30,7 @@ export default async function HomeCountryBlock({
   return (
     <HomeCountryCard
       copy={copy}
+      variant={variant}
       field={field}
       subject={subject}
       spec={spec}

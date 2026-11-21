@@ -24,7 +24,9 @@ export default function HomeCountryCard({
   spec,
   level,
   countries,
+  variant = "card",
 }: {
+  variant?: "card" | "banner"; // "card" = sidebar box, "banner" = wide strip inside the page content
   copy: HomeCardCopy;
   field: string; // e.g. "Engineering"
   subject: string; // subject slug
@@ -47,6 +49,26 @@ export default function HomeCountryCard({
   const title = home ? fill(copy.title, { field, country: `{${home.name}}` }) : fill(copy.titleGeneric, { field });
   const text = home ? fill(copy.text, { field, country: home.name }) : fill(copy.textGeneric, { field });
 
+  const href = internationalHref({ subject, from: home?.slug, spec, level });
+
+  if (variant === "banner") {
+    return (
+      <div className="home-banner">
+        <span className="ico-tile home-banner-ico">
+          <Globe className="ico" aria-hidden />
+        </span>
+        <div className="home-banner-text">
+          <h3 className="t-h4">{withHighlight(title)}</h3>
+          <p className="muted small mt-2">{text}</p>
+        </div>
+        <Link className="btn btn-primary home-banner-btn" href={href}>
+          {copy.link}
+          <ArrowRight className="ico" aria-hidden />
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="card home-card">
       <span className="ico-tile">
@@ -54,7 +76,7 @@ export default function HomeCountryCard({
       </span>
       <h3 className="t-h4 mt-4">{withHighlight(title)}</h3>
       <p className="muted small mt-2">{text}</p>
-      <Link className="link-arrow mt-4" href={internationalHref({ subject, from: home?.slug, spec, level })}>
+      <Link className="link-arrow mt-4" href={href}>
         {copy.link}
         <ArrowRight className="ico" aria-hidden />
       </Link>
