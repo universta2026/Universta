@@ -23,7 +23,7 @@ export const ROW_STYLE: React.CSSProperties = {
 };
 
 // Flag SVGs live in public/flags/svg/<2-letter code>.svg. Hidden when the country has no code.
-export function Flag({ code }: { code?: string | null }) {
+export function Flag({ code, w = 28, h = 20 }: { code?: string | null; w?: number; h?: number }) {
   const c = code?.trim().toLowerCase();
   if (!c || c.length !== 2) return null;
   return (
@@ -31,10 +31,10 @@ export function Flag({ code }: { code?: string | null }) {
     <img
       src={`/flags/svg/${c}.svg`}
       alt=""
-      width={28}
-      height={20}
+      width={w}
+      height={h}
       loading="lazy"
-      style={{ width: 28, height: 20, objectFit: "cover", borderRadius: 3, flexShrink: 0, boxShadow: "0 0 0 1px rgba(0,0,0,.12)" }}
+      style={{ width: w, height: h, objectFit: "cover", borderRadius: w > 28 ? 6 : 3, flexShrink: 0, boxShadow: "0 0 0 1px rgba(0,0,0,.12)" }}
       onError={(e) => {
         e.currentTarget.style.display = "none";
       }}
@@ -71,7 +71,7 @@ export default function ContinentCards({
 
   return (
     <div>
-      <div className="grid g-3">
+      <div className="grid g-4">
         {continents.map((c) => {
           const isOpen = open === c.name;
           return (
@@ -118,9 +118,9 @@ export default function ContinentCards({
       {active && (
         <div className="panel mt-6" id="continent-panel" role="region" aria-label={active.name}>
           <h3 className="t-h3">{fill(panelTitle, { continent: active.name })}</h3>
-          {/* 3 countries per row (1 on phones). Each row is [flag slot][name]...[arrow]; the flag goes in the
+          {/* 4 countries per row (1 on phones). Each row is [flag slot][name]...[arrow]; the flag goes in the
               first <span> of CountryRow once it is added. */}
-          <ul className="grid g-3 mt-4" style={{ gap: 10 }}>
+          <ul className="grid g-4 mt-4" style={{ gap: 10 }}>
             {active.countries.map((k) => (
               <li key={k.slug} style={{ minWidth: 0 }}>
                 {k.href ? (

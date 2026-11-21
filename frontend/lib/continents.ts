@@ -17,7 +17,7 @@ const ORDER = ["Africa", "Antarctica", "Asia", "Europe", "North America", "Ocean
 
 export type ContinentGroup<T> = { name: string; countries: T[] };
 
-/** "North America" -> "north-america": the continent part of /studyabroad/north-america. */
+/** "North America" -> "north-america": the continent part of /study-abroad/north-america. */
 export const continentSlug = (name: string) => name.trim().toLowerCase().replace(/\s+/g, "-");
 
 /** The continent group whose slug matches, or undefined (then the URL is probably a country). */
@@ -35,4 +35,18 @@ export function groupByContinent<T extends { country_code: string | null }>(coun
   return [...map.entries()]
     .sort(([a], [b]) => (ORDER.indexOf(a) + 1 || 99) - (ORDER.indexOf(b) + 1 || 99))
     .map(([name, list]) => ({ name, countries: list }));
+}
+
+// Slugs used to top the "popular" list up to `n` when fewer countries are flagged is_popular in the database.
+const POPULAR_FALLBACK = ["united-kingdom", "united-states", "canada", "australia", "germany", "ireland", "france", "netherlands", "new-zealand", "singapore"];
+
+/** Up to `n` popular countries: the ones flagged is_popular first, then topped up from a default list, then any other. */
+export function popularCountries<T extends { slug: string; is_popular?: boolean }>(countries: T[], n = 8): T[] {
+  const flagged = countries.filter((c) => c.is_popular);
+  const rest = countries.filter((c) => !c.is_popular);
+  const rank = (c: T) => {
+    const i = POPULAR_FALLBACK.indexOf(c.slug);
+    return i === -1 ? 999 : i;
+  };
+  return [...flagged, ...[...rest].sort((a, b) => rank(a) - rank(b))].slice(0, n);
 }

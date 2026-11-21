@@ -7,7 +7,7 @@ import HomeCountryPicker from "@/components/HomeCountryPicker";
 import SaveButton from "@/components/SaveButton";
 import SubNav from "@/components/SubNav";
 import SubjectIcon from "@/components/SubjectIcon";
-import { AsideLead, DetailHero, DetailLayout, Faq, NextStepsBand, Note, Section, withHighlight } from "@/components/ui";
+import { LeadBand, DetailHero, DetailLayout, Faq, NextStepsBand, Note, Section, withHighlight } from "@/components/ui";
 import { getCountries, getPageContent, getSubject, getSubjects, text } from "@/lib/api";
 import { groupByContinent } from "@/lib/continents";
 import { fill, internationalHref } from "@/lib/eligibility";
@@ -131,7 +131,7 @@ export default async function InternationalCountryView({ slug, country, spec: sp
               title={t("fields", "title", "Fields open to students from {country}")}
               intro={t("fields", "intro", "The field you are viewing is first.")}
             >
-              <div className="grid g-2">
+              <div className="grid g-3">
                 {subjects.map((s) => (
                   <div className="card" key={s.id}>
                     <h3 className="card-title">
@@ -155,7 +155,7 @@ export default async function InternationalCountryView({ slug, country, spec: sp
 
             {subject.study_levels.length > 0 && (
               <Section id="levels" title={t("levels", "title", "{subject} levels you can apply for")}>
-                <div className="grid g-3">
+                <div className="grid g-4">
                   {subject.study_levels.map((l) => (
                     <Link className="card" href={`/subjects/${subject.slug}/${l.slug}`} key={l.id}>
                       {l.duration && <span className="tag">{l.duration}</span>}
@@ -177,7 +177,6 @@ export default async function InternationalCountryView({ slug, country, spec: sp
             )}
           </>
         }
-        aside={<AsideLead about={focus} lead={lead} />}
       />
 
       <NextStepsBand
@@ -188,6 +187,7 @@ export default async function InternationalCountryView({ slug, country, spec: sp
           { icon: MessageCircle, title: "Find a consultant", desc: "Verified, reviewed advisers", key: "consultants" },
         ]}
       />
+      <LeadBand about={focus} lead={lead} />
     </main>
   );
 }

@@ -2,6 +2,7 @@
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, ChevronRight, Info, Landmark, Globe, Wallet, type LucideIcon } from "lucide-react";
+import LeadBanner from "./LeadBanner";
 import LeadForm, { type LeadContext } from "./LeadForm";
 import Ph from "./Ph";
 import { NAV, navHref, TABLE_COUNTRIES } from "./site-config";
@@ -116,12 +117,25 @@ export function DetailHero({
   );
 }
 
-export function DetailLayout({ main, aside }: { main: ReactNode; aside: ReactNode }) {
+// A full-width coloured band holding one section. Put several inside <div className="bands"> and they
+// alternate white / light blue automatically (see .bands in universta.css).
+export function Band({ children }: { children: ReactNode }) {
+  return (
+    <div className="band">
+      <div className="shell">
+        <div className="detail-main">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+// Full-width content. `aside` is optional extra blocks (ads, banners...) shown under the content, also full width.
+export function DetailLayout({ main, aside }: { main: ReactNode; aside?: ReactNode }) {
   return (
     <div className="shell">
       <div className="detail">
         <div className="detail-main">{main}</div>
-        <aside className="detail-aside">{aside}</aside>
+        {aside && <div className="detail-extra">{aside}</div>}
       </div>
     </div>
   );
@@ -215,7 +229,7 @@ export function StatCards() {
     [Wallet, "FEE", "Typical tuition / year"],
   ];
   return (
-    <div className="grid g-3 mt-6">
+    <div className="grid g-4 mt-6">
       {items.map(([Icon, v, label]) => (
         <div className="card card-flat" key={label}>
           <span style={{ color: "var(--blue)" }}>
@@ -322,6 +336,11 @@ export function CtaBand({ title, text, lead }: { title: ReactNode; text: string;
       </div>
     </section>
   );
+}
+
+// Call-to-action banner just above the footer; its button opens the enquiry form as a pop-up.
+export function LeadBand({ about, lead }: { about: string; lead?: LeadContext }) {
+  return <LeadBanner about={about} lead={lead} />;
 }
 
 export function AsideLead({ about, lead }: { about: string; lead?: LeadContext }) {

@@ -12,7 +12,7 @@ import SubNav from "./SubNav";
 import SubjectIcon from "./SubjectIcon";
 import { withFrom, type Place } from "@/lib/place";
 import {
-  AsideLead,
+  LeadBand,
   CareersTable,
   CostTable,
   DetailHero,
@@ -147,7 +147,7 @@ export default function SpecializationView({
 
             {levels.length > 0 && (
               <Section id="levels" title="Study levels" intro="Choose a level to see entry requirements, programmes and costs.">
-                <div className="grid g-3">
+                <div className="grid g-4">
                   {levels.map((lvl) => (
                     <Link className="card" href={withFrom(`/subjects/${subject.slug}/${spec.slug}/${lvl.slug}`, place?.slug)} key={lvl.id}>
                       {lvl.duration && <span className="tag">{lvl.duration}</span>}
@@ -209,7 +209,7 @@ export default function SpecializationView({
               title="What you’ll study"
               intro="Typical modules. Exact content varies by university - check each course page."
             >
-              <div className="grid g-2">
+              <div className="grid g-3">
                 {[1, 2, 3, 4].map((n) => (
                   <div className="card card-flat row" style={{ padding: "16px 20px" }} key={n}>
                     <span className="tag tag-blue">0{n}</span>
@@ -236,8 +236,7 @@ export default function SpecializationView({
         }
         aside={
           <>
-            <HomeCountryBlock field={spec.name} subject={subject.slug} spec={spec.slug} />
-            <AsideLead about={spec.name} lead={lead} />
+            <HomeCountryBlock variant="banner" field={spec.name} subject={subject.slug} spec={spec.slug} />
           </>
         }
       />
@@ -250,6 +249,7 @@ export default function SpecializationView({
           { icon: MessageCircle, title: "Find a consultant", desc: "Verified, reviewed advisers", key: "consultants" },
         ]}
       />
+      <LeadBand about={spec.name} lead={lead} />
     </main>
   );
 }

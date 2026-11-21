@@ -10,7 +10,7 @@ import RichText from "@/components/RichText";
 import { plainText } from "@/lib/plain-text";
 import { AdBlock, CtaBlock, SectionCards } from "@/components/SubjectBlocks";
 import {
-  AsideLead,
+  LeadBand,
   CareersTable,
   CostTable,
   DetailHero,
@@ -181,7 +181,7 @@ export default async function SubjectDetailPage({ params, searchParams }: Props)
 
             {hasSpecs && (
               <Section id="specializations" title={copy.specsTitle} intro={copy.specsIntro}>
-                <div className="grid g-2">
+                <div className="grid g-3">
                   {subject.specializations.map((sp) => (
                     <Link className="card" href={withFrom(`/subjects/${subject.slug}/${sp.slug}`, from?.slug)} key={sp.id}>
                       <div className="row between">
@@ -217,7 +217,7 @@ export default async function SubjectDetailPage({ params, searchParams }: Props)
 
             {hasLevels && (
               <Section id="study-levels" title={copy.levelsTitle} intro={copy.levelsIntro}>
-                <div className="grid g-3">
+                <div className="grid g-4">
                   {levels.map((lvl) => (
                     <Link className="card" href={withFrom(`/subjects/${subject.slug}/${lvl.slug}`, from?.slug)} key={lvl.id}>
                       {lvl.duration && <span className="tag">{lvl.duration}</span>}
@@ -261,7 +261,7 @@ export default async function SubjectDetailPage({ params, searchParams }: Props)
               {destinations.length > 0 && (
                 <div style={{ marginBottom: 24 }}>
                   {/* Country name only; link to each country page once those pages exist. */}
-                  <div className="grid g-3">
+                  <div className="grid g-4">
                     {destinations.map((d) => (
                       <div className="card" key={d.id}>
                         <div className="row between">
@@ -286,7 +286,6 @@ export default async function SubjectDetailPage({ params, searchParams }: Props)
             </Section>
           </>
         }
-        aside={<AsideLead about={short} lead={lead} />}
       />
 
       <NextStepsBand
@@ -297,6 +296,7 @@ export default async function SubjectDetailPage({ params, searchParams }: Props)
           { icon: MessageCircle, title: "Find a consultant", desc: "Verified, reviewed advisers", key: "consultants" },
         ]}
       />
+      <LeadBand about={short} lead={lead} />
     </main>
   );
 }
