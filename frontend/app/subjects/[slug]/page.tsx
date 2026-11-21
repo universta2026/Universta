@@ -25,21 +25,25 @@ import {
   StatCards,
 } from "@/components/ui";
 import { getPageContent, getSubject, getSubjects, text } from "@/lib/api";
+import { getPlace, withFrom, type SearchParams } from "@/lib/place";
 import { getLevels } from "@/lib/levels";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: SearchParams };
 
 // "Computer Science & IT" -> "Computer Science" in running text
 const shortName = (name: string) => name.replace(" & IT", "").replace(" & Management", "");
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const subject = await getSubject(slug);
-  return { title: subject ? `Study ${subject.name} abroad | Universta` : "Subject not found | Universta" };
+  const [subject, place] = await Promise.all([getSubject(slug), getPlace(searchParams)]);
+  return { title: subject ? `Study ${subject.name} ${place ? `in ${place.name}` : "abroad"} | Universta` : "Subject not found | Universta" };
 }
 
-export default async function SubjectDetailPage({ params }: Props) {
+export default async function SubjectDetailPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  // ?from=<country-slug> is set by links on a country page; the text then says "in <country>" instead of "abroad".
+  const from = await getPlace(searchParams);
+  const where = from ? `in ${from.name}` : "abroad";
   const [subject, content, allSubjects] = await Promise.all([
     getSubject(slug),
     getPageContent("subject-detail"), // editable headings, rows in Directus: page_key = "subject-detail"
@@ -133,7 +137,7 @@ export default async function SubjectDetailPage({ params }: Props) {
         tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}
         title={
           <>
-            Study <span className="hl">{subject.name}</span> abroad
+            Study <span className="hl">{subject.name}</span> {where}
           </>
         }
         lead={plainText(subject.description) || undefined}
@@ -163,9 +167,9 @@ export default async function SubjectDetailPage({ params }: Props) {
                   <RichText html={about.body} />
                 ) : (
                   <>
-                    <p>{plainText(subject.description) || `Explore studying ${subject.name} abroad.`}</p>
+                    <p>{plainText(subject.description) || `Explore studying ${subject.name} ${where}.`}</p>
                     <p className="muted">
-                      Studying {short} abroad gives you access to specialist teaching, industry links and a global network. Below
+                      Studying {short} {where} gives you access to specialist teaching, industry links and a global network. Below
                       you’ll find the levels you can study, the universities that offer it, what it costs in each country, and where
                       it can take your career.
                     </p>
@@ -179,7 +183,7 @@ export default async function SubjectDetailPage({ params }: Props) {
               <Section id="specializations" title={copy.specsTitle} intro={copy.specsIntro}>
                 <div className="grid g-2">
                   {subject.specializations.map((sp) => (
-                    <Link className="card" href={`/subjects/${subject.slug}/${sp.slug}`} key={sp.id}>
+                    <Link className="card" href={withFrom(`/subjects/${subject.slug}/${sp.slug}`, from?.slug)} key={sp.id}>
                       <div className="row between">
                         <h3 className="card-title">{sp.name}</h3>
                         <ChevronRight className="ico" aria-hidden />
@@ -215,7 +219,7 @@ export default async function SubjectDetailPage({ params }: Props) {
               <Section id="study-levels" title={copy.levelsTitle} intro={copy.levelsIntro}>
                 <div className="grid g-3">
                   {levels.map((lvl) => (
-                    <Link className="card" href={`/subjects/${subject.slug}/${lvl.slug}`} key={lvl.id}>
+                    <Link className="card" href={withFrom(`/subjects/${subject.slug}/${lvl.slug}`, from?.slug)} key={lvl.id}>
                       {lvl.duration && <span className="tag">{lvl.duration}</span>}
                       <h3 className="card-title mt-4">
                         {lvl.name} in {short}

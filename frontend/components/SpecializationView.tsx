@@ -10,6 +10,7 @@ import HomeCountryBlock from "./HomeCountryBlock";
 import SaveButton from "./SaveButton";
 import SubNav from "./SubNav";
 import SubjectIcon from "./SubjectIcon";
+import { withFrom, type Place } from "@/lib/place";
 import {
   AsideLead,
   CareersTable,
@@ -29,16 +30,19 @@ import {
 export default function SpecializationView({
   subject,
   spec,
+  place,
   levels,
   lead,
   sections = {},
 }: {
   subject: SubjectDetail;
   spec: Specialization;
+  place?: Place | null; // country the visitor came from; text says "in <country>" instead of "abroad"
   levels: StudyLevel[];
   lead: LeadContext;
   sections?: LevelPageSections; // CMS blocks (subject_sections rows for this specialization)
 }) {
+  const where = place ? `in ${place.name}` : "abroad";
   const about = sections.about?.body ? sections.about : null;
   const why = sections.why?.body ? sections.why : null;
   const industries = sections.industries ?? [];
@@ -65,7 +69,7 @@ export default function SpecializationView({
         tile={<SubjectIcon name={subject.icon_key} slug={subject.slug} size="lg" />}
         title={
           <>
-            Study <span className="hl">{spec.name}</span> abroad
+            Study <span className="hl">{spec.name}</span> {where}
           </>
         }
         lead={intro}
@@ -79,7 +83,7 @@ export default function SpecializationView({
         }
         facts={[
           { icon: Layers, label: "Levels", value: levels.length > 0 ? `${levels.length} levels` : <Ph>N</Ph> },
-          { icon: BookOpen, label: "Subject", value: <Link className="fact-link" href={`/subjects/${subject.slug}`}>{subject.name}</Link> },
+          { icon: BookOpen, label: "Subject", value: <Link className="fact-link" href={withFrom(`/subjects/${subject.slug}`, place?.slug)}>{subject.name}</Link> },
           { icon: Landmark, label: "Universities", value: <Ph>NUMBER</Ph> },
           { icon: GraduationCap, label: "Courses", value: <Ph>NUMBER</Ph> },
         ]}
@@ -111,7 +115,7 @@ export default function SpecializationView({
                   <>
                     <p>{intro}</p>
                     <p className="muted">
-                      Studying {spec.name} abroad gives you access to specialist teaching, industry links and a global network.
+                      Studying {spec.name} {where} gives you access to specialist teaching, industry links and a global network.
                       Below you’ll find the levels you can study, the universities that offer it, what it costs in each country,
                       and where it can take your career.
                     </p>
@@ -145,7 +149,7 @@ export default function SpecializationView({
               <Section id="levels" title="Study levels" intro="Choose a level to see entry requirements, programmes and costs.">
                 <div className="grid g-3">
                   {levels.map((lvl) => (
-                    <Link className="card" href={`/subjects/${subject.slug}/${spec.slug}/${lvl.slug}`} key={lvl.id}>
+                    <Link className="card" href={withFrom(`/subjects/${subject.slug}/${spec.slug}/${lvl.slug}`, place?.slug)} key={lvl.id}>
                       {lvl.duration && <span className="tag">{lvl.duration}</span>}
                       <h3 className="card-title mt-4">
                         {lvl.name} in {spec.name}

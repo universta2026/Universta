@@ -9,6 +9,7 @@ import type { LevelPageSections, Specialization, StudyLevel } from "@/lib/api";
 import { AdBlock, CtaBlock, SectionCards } from "./SubjectBlocks";
 import { inlineLevel, levelKindOf, type LevelKind } from "@/lib/levels";
 import type { LeadContext } from "./LeadForm";
+import { withFrom, type Place } from "@/lib/place";
 import HomeCountryBlock from "./HomeCountryBlock";
 import SaveButton from "./SaveButton";
 import SubjectIcon from "./SubjectIcon";
@@ -82,6 +83,7 @@ export default function LevelPageView({
   subjectSlug,
   specSlug,
   allLevels = [],
+  place,
 }: {
   crumbs: { label: string; href?: string }[]; // full trail, ending with the level
   fieldName: string; // e.g. "Data Science"
@@ -93,7 +95,9 @@ export default function LevelPageView({
   subjectSlug?: string;
   specSlug?: string; // specialization-level page only: enables the "levels to study" block
   allLevels?: StudyLevel[]; // the subject's levels, linked as "<this specialization> + that level"
+  place?: Place | null; // country the visitor came from; text says "in <country>" instead of "abroad"
 }) {
+  const where = place ? `in ${place.name}` : "abroad";
   const kind = levelKindOf(level);
   const duration = level.duration ?? undefined;
   const lvl = inlineLevel(level.name);
@@ -117,10 +121,10 @@ export default function LevelPageView({
         tile={<SubjectIcon name={iconKey} slug={subjectSlug} size="lg" />}
         title={
           <>
-            Study {level.name} in <span className="hl">{fieldName}</span> abroad
+            Study {level.name} in <span className="hl">{fieldName}</span> {where}
           </>
         }
-        lead={`Compare ${level.name} programmes in ${fieldName} across countries - entry requirements, costs, intakes and scholarships in one place.`}
+        lead={`Compare ${level.name} programmes in ${fieldName} ${place ? `in ${place.name}` : "across countries"} - entry requirements, costs, intakes and scholarships in one place.`}
         actions={
           <>
             <SaveButton />
@@ -197,7 +201,7 @@ export default function LevelPageView({
               <Section id="specializations" title={`${level.name} specializations`} intro={`Pick a specialization to see ${lvl} options for it.`}>
                 <div className="grid g-2">
                   {specializations.map((sp) => (
-                    <Link className="card" href={`/subjects/${subjectSlug}/${sp.slug}/${level.slug}`} key={sp.id}>
+                    <Link className="card" href={withFrom(`/subjects/${subjectSlug}/${sp.slug}/${level.slug}`, place?.slug)} key={sp.id}>
                       <div className="row between">
                         <h3 className="card-title">
                           {sp.name}

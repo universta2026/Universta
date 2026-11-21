@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import LevelPageView from "@/components/LevelPageView";
 import SpecializationView from "@/components/SpecializationView";
 import { getLevelSections, getSpecializationSections, getSubject, getSubjects } from "@/lib/api";
+import { getPlace, withFrom, type SearchParams } from "@/lib/place";
 import { getLevels } from "@/lib/levels";
 
-type Props = { params: Promise<{ slug: string; segment: string }> };
+type Props = { params: Promise<{ slug: string; segment: string }>; searchParams: SearchParams };
 
 // /subjects/engineering/civil-engineering   -> a specialization of that subject
 // /subjects/engineering/bachelors           -> a study level of that subject
@@ -21,16 +22,19 @@ async function load(slug: string, segment: string) {
   return { subject, levels, spec, level };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug, segment } = await params;
-  const data = await load(slug, segment);
+  const [data, place] = await Promise.all([load(slug, segment), getPlace(searchParams)]);
   if (!data) return { title: "Page not found | Universta" };
-  if (data.spec) return { title: `Study ${data.spec.name} abroad | Universta` };
-  return { title: `Study ${data.level!.name} in ${data.subject.name} abroad | Universta` };
+  const where = place ? `in ${place.name}` : "abroad";
+  if (data.spec) return { title: `Study ${data.spec.name} ${where} | Universta` };
+  return { title: `Study ${data.level!.name} in ${data.subject.name} ${where} | Universta` };
 }
 
-export default async function SubjectSegmentPage({ params }: Props) {
+export default async function SubjectSegmentPage({ params, searchParams }: Props) {
   const { slug, segment } = await params;
+  // ?from=<country-slug> is set by links on a country page; the text then says "in <country>" instead of "abroad".
+  const place = await getPlace(searchParams);
   const data = await load(slug, segment);
   if (!data) notFound();
   const { subject, levels, spec, level } = data;
@@ -44,6 +48,7 @@ export default async function SubjectSegmentPage({ params }: Props) {
         sections={specSections}
         subject={subject}
         spec={spec}
+        place={place}
         levels={levels}
         lead={{ subjects: subjectNames, subject: subject.name, specialization: spec.name }}
       />
@@ -61,9 +66,10 @@ export default async function SubjectSegmentPage({ params }: Props) {
       crumbs={[
         { label: "Home", href: "/" },
         { label: "Subjects", href: "/subjects" },
-        { label: subject.name, href: `/subjects/${subject.slug}` },
+        { label: subject.name, href: withFrom(`/subjects/${subject.slug}`, place?.slug) },
         { label: level!.name },
       ]}
+      place={place}
       fieldName={subject.name}
       level={level!}
       iconKey={subject.icon_key}
