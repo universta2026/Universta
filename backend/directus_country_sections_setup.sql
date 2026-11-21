@@ -84,6 +84,16 @@ VALUES
  '{"template":"{{name}}"}'::json, 'related-values', '{"template":"{{name}}"}'::json,
  false, false, 10, 'full', 'The country this item belongs to.', true),
 
+('country_sections', 'subject_id', 'm2o', 'select-dropdown-m2o',
+ '{"template":"{{name}}"}'::json, 'related-values', '{"template":"{{name}}"}'::json,
+ false, false, 13, 'full',
+ 'For "Top subject" rows: pick the subject. The website links the item to that subject page.', false),
+
+('country_sections', 'specialization_id', 'm2o', 'select-dropdown-m2o',
+ '{"template":"{{name}}"}'::json, 'related-values', '{"template":"{{name}}"}'::json,
+ false, false, 14, 'full',
+ 'For "Top course" rows: pick the specialization. The website links the item to that specialization page.', false),
+
 ('country_sections', 'created_at', 'date-created', 'datetime', NULL, 'datetime', NULL, true, true, 11, 'half', NULL, false),
 ('country_sections', 'updated_at', 'date-updated', 'datetime', NULL, 'datetime', NULL, true, true, 12, 'half', NULL, false);
 
@@ -93,6 +103,13 @@ WHERE many_collection = 'country_sections' AND many_field = 'country_id';
 
 INSERT INTO directus_relations (many_collection, many_field, one_collection, one_field, sort_field, one_deselect_action)
 VALUES ('country_sections', 'country_id', 'countries', 'sections', 'display_order', 'delete');
+
+DELETE FROM directus_relations
+WHERE many_collection = 'country_sections' AND many_field IN ('subject_id', 'specialization_id');
+
+INSERT INTO directus_relations (many_collection, many_field, one_collection, one_field, one_deselect_action)
+VALUES ('country_sections', 'subject_id', 'subjects', NULL, 'nullify'),
+       ('country_sections', 'specialization_id', 'specializations', NULL, 'nullify');
 
 -- 4) "Page sections" list on the country screen (alias field, not a real column) ------
 DELETE FROM directus_fields WHERE collection = 'countries' AND field = 'sections';

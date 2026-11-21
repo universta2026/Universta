@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.db.database import get_db
 from app.models.models import Country, CountrySection
@@ -61,6 +61,7 @@ def get_country_sections(slug: str, db: Session = Depends(get_db)):
 
     rows = db.scalars(
         select(CountrySection)
+        .options(selectinload(CountrySection.subject), selectinload(CountrySection.specialization))
         .where(
             CountrySection.country_id == country.id,
             CountrySection.status == "published",
@@ -82,7 +83,12 @@ def get_country_sections(slug: str, db: Session = Depends(get_db)):
                 )
             ]
     for row in rows:
-        grouped.setdefault(SECTION_FIELDS[row.section], []).append(
-            schemas.SectionItem.model_validate(row)
-        )
+        item = schemas.SectionItem.model_validate(row)
+        if not row.url:
+            # Link to the real page when the row points at a published subject / specialization.
+            if row.subject is not None and row.subject.status == "published":
+                item.url = f"/subjects/{row.subject.slug}"
+            elif row.specialization is not None and row.specialization.status == "published":
+                item.url = f"/specializations/{row.specialization.slug}"
+        grouped.setdefault(SECTION_FIELDS[row.section], []).append(item)
     return schemas.CountrySections(**grouped)

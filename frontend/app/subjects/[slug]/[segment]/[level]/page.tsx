@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import LevelPageView from "@/components/LevelPageView";
 import { getSpecializationLevelSections, getSubject, getSubjects } from "@/lib/api";
 import { getLevels } from "@/lib/levels";
+import { getPlace, withFrom, type SearchParams } from "@/lib/place";
 
-type Props = { params: Promise<{ slug: string; segment: string; level: string }> };
+type Props = { params: Promise<{ slug: string; segment: string; level: string }>; searchParams: SearchParams };
 
 // /subjects/engineering/civil-engineering/masters -> a study level of one specialization.
 // Study levels belong to the subject in the API, so a specialization shows its subject's levels.
@@ -17,14 +18,15 @@ async function load(slug: string, segment: string, levelSlug: string) {
   return { subject, spec, level, levels: getLevels(subject.study_levels) };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug, segment, level } = await params;
-  const data = await load(slug, segment, level);
-  return { title: data ? `Study ${data.level.name} in ${data.spec.name} abroad | Universta` : "Page not found | Universta" };
+  const [data, place] = await Promise.all([load(slug, segment, level), getPlace(searchParams)]);
+  return { title: data ? `Study ${data.level.name} in ${data.spec.name} ${place ? `in ${place.name}` : "abroad"} | Universta` : "Page not found | Universta" };
 }
 
-export default async function SpecializationLevelPage({ params }: Props) {
+export default async function SpecializationLevelPage({ params, searchParams }: Props) {
   const { slug, segment, level } = await params;
+  const place = await getPlace(searchParams); // country the visitor came from, if any
   const data = await load(slug, segment, level);
   if (!data) notFound();
   const { subject, spec, level: lvl, levels } = data;
@@ -41,10 +43,11 @@ export default async function SpecializationLevelPage({ params }: Props) {
       crumbs={[
         { label: "Home", href: "/" },
         { label: "Subjects", href: "/subjects" },
-        { label: subject.name, href: `/subjects/${subject.slug}` },
-        { label: spec.name, href: `/subjects/${subject.slug}/${spec.slug}` },
+        { label: subject.name, href: withFrom(`/subjects/${subject.slug}`, place?.slug) },
+        { label: spec.name, href: withFrom(`/subjects/${subject.slug}/${spec.slug}`, place?.slug) },
         { label: lvl.name },
       ]}
+      place={place}
       fieldName={spec.name}
       level={lvl}
       iconKey={subject.icon_key}
